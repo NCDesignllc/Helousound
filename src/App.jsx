@@ -20,6 +20,8 @@ import {
   Zap,
   Mail
 } from 'lucide-react';
+import BundleBuilder from './pages/BundleBuilder.jsx';
+import WhySoundMatters from './pages/WhySoundMatters.jsx';
 
 // Utility to animate headings letter-by-letter when they enter view
 // When keepWordsTogether is true, each word stays intact so lines wrap at word boundaries.
@@ -82,6 +84,7 @@ const renderLetters = (text, startDelay = 0, keepWordsTogether = false) => {
 };
 
 const App = () => {
+  const [currentPage, setCurrentPage] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -141,8 +144,8 @@ const App = () => {
 
   const navLinks = [
     { name: 'Services', href: '#services' },
-    { name: 'Why Sound Matters', href: '#why-sound' },
-    { name: 'Rates', href: '#pricing' },
+    { name: 'Why Sound Matters', href: '#why-sound-page', onClick: (e) => { e.preventDefault(); setCurrentPage('why-sound'); } },
+    { name: 'Build Bundle', href: '#bundle', onClick: (e) => { e.preventDefault(); setCurrentPage('bundle'); } },
     { name: 'Quote', href: '#quote-form' },
   ];
 
@@ -252,10 +255,10 @@ const App = () => {
   ];
 
   const addons = [
-    { item: "Additional Wireless Lav", rate: "$75–$125", price: 100 },
+    { item: "Additional Wireless Lav", rate: "$100", price: 100 },
     { item: "Wireless Boom Mic", rate: "$100", price: 100 },
     { item: "IFB Headset (Individual)", rate: "$50", price: 50 },
-    { item: "Wireless Camera Audio Link", rate: "$50–$75", price: 65 },
+    { item: "Wireless Camera Audio Link", rate: "$75", price: 75 },
     { item: "Timecode Sync Box", rate: "$50", price: 50 },
     { item: "Timecode Smart Slate", rate: "$75", price: 75 },
     { item: "Playback Speakers (Pair)", rate: "$250", price: 250 }
@@ -350,6 +353,14 @@ const App = () => {
     }, 3000);
   };
 
+  if (currentPage === 'bundle') {
+    return <BundleBuilder onBack={() => setCurrentPage('home')} />;
+  }
+
+  if (currentPage === 'why-sound') {
+    return <WhySoundMatters onBack={() => setCurrentPage('home')} />;
+  }
+
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans selection:bg-cyan-500/30">
       {/* Navigation */}
@@ -364,7 +375,12 @@ const App = () => {
           
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map(link => (
-              <a key={link.name} href={link.href} className="text-sm font-bold uppercase tracking-widest hover:text-cyan-400 transition-colors">
+              <a 
+                key={link.name} 
+                href={link.href} 
+                onClick={link.onClick}
+                className="text-sm font-bold uppercase tracking-widest hover:text-cyan-400 transition-colors"
+              >
                 {link.name}
               </a>
             ))}
@@ -378,7 +394,15 @@ const App = () => {
         {isMenuOpen && (
           <div className="md:hidden bg-neutral-900/95 backdrop-blur-md border-t border-neutral-800 p-6 space-y-4">
             {navLinks.map(link => (
-              <a key={link.name} href={link.href} onClick={() => setIsMenuOpen(false)} className="block text-sm font-bold uppercase tracking-widest hover:text-cyan-400 transition-colors">
+              <a 
+                key={link.name} 
+                href={link.href} 
+                onClick={(e) => { 
+                  setIsMenuOpen(false); 
+                  if (link.onClick) link.onClick(e);
+                }} 
+                className="block text-sm font-bold uppercase tracking-widest hover:text-cyan-400 transition-colors"
+              >
                 {link.name}
               </a>
             ))}
@@ -555,27 +579,6 @@ const App = () => {
             ))}
           </div>
 
-          <div className="bg-neutral-800/50 border border-neutral-700 rounded-2xl p-8">
-            <h3 className="text-2xl font-black uppercase mb-6">Add-On Gear</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="border-b border-neutral-700">
-                  <tr>
-                    <th className="text-left py-3 font-bold uppercase">Item</th>
-                    <th className="text-right py-3 font-bold uppercase">Rate</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-neutral-700">
-                  {addons.map((addon, i) => (
-                    <tr key={i} className="hover:bg-neutral-700/30 transition-colors">
-                      <td className="py-3">{addon.item}</td>
-                      <td className="text-right text-cyan-400 font-bold">{addon.rate}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
       </section>
 
