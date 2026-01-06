@@ -21,6 +21,66 @@ import {
   Mail
 } from 'lucide-react';
 
+// Utility to animate headings letter-by-letter when they enter view
+// When keepWordsTogether is true, each word stays intact so lines wrap at word boundaries.
+const renderLetters = (text, startDelay = 0, keepWordsTogether = false) => {
+  if (!keepWordsTogether) {
+    return text.split('').map((char, index) => (
+      <span
+        key={`${text}-${index}`}
+        data-animate-on-view
+        className="inline-block opacity-0"
+        style={{
+          animationDelay: `${startDelay + index * 0.05}s`,
+          animationFillMode: 'forwards',
+          willChange: 'transform, opacity'
+        }}
+      >
+        {char === ' ' ? '\u00a0' : char}
+      </span>
+    ));
+  }
+
+  const words = text.split(' ').filter(Boolean);
+  let currentDelay = startDelay;
+
+  return words.map((word, wordIndex) => {
+    const letters = word.split('').map((char, charIndex) => {
+      const delay = currentDelay;
+      currentDelay += 0.05;
+
+      return (
+        <span
+          key={`${word}-${wordIndex}-${charIndex}`}
+          data-animate-on-view
+          className="inline-block opacity-0"
+          style={{
+            animationDelay: `${delay}s`,
+            animationFillMode: 'forwards',
+            willChange: 'transform, opacity'
+          }}
+        >
+          {char}
+        </span>
+      );
+    });
+
+    if (wordIndex < words.length - 1) {
+      currentDelay += 0.1; // small pause between words for a smoother stagger
+    }
+
+    return (
+      <span
+        key={`${word}-${wordIndex}`}
+        className="inline-flex gap-[3px] whitespace-nowrap"
+        style={{ marginRight: wordIndex === words.length - 1 ? 0 : '12px' }}
+      >
+        {letters}
+      </span>
+    );
+  });
+};
+
 const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -44,6 +104,28 @@ const App = () => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Trigger animations when elements enter the viewport
+  useEffect(() => {
+    const elements = document.querySelectorAll('[data-animate-on-view]');
+    if (!elements.length) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-zoom-in');
+            entry.target.classList.remove('opacity-0');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+
+    elements.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
   const productionTypes = [
@@ -311,15 +393,16 @@ const App = () => {
             autoPlay
             muted
             loop
-            className="w-full h-full object-cover opacity-40"
+            className="w-full h-full object-cover opacity-40 filter grayscale"
             src="/Abstract_Audio_Wave_Video_Generation.mp4"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-neutral-950/50 to-neutral-950"></div>
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl font-black uppercase leading-tight mb-6 italic">
-            Professional Audio for<br /><span className="text-cyan-400">Demanding Filmmakers</span>
+          <h1 className="text-5xl md:text-7xl font-black uppercase leading-tight mb-6 italic animate-hero-pop">
+            <span className="flex justify-center flex-wrap gap-[3px]">{renderLetters('Professional Audio for', 0, true)}</span>
+            <span className="flex justify-center flex-wrap gap-[3px] text-cyan-400 mt-2">{renderLetters('Demanding Filmmakers', 0.4, true)}</span>
           </h1>
           <p className="text-lg md:text-xl text-neutral-300 mb-12 max-w-2xl mx-auto">
             On-set recording, sound design, dialogue editing, and final mixing. Bringing pristine audio to your vision.
@@ -343,7 +426,11 @@ const App = () => {
               />
             </div>
             {/* Experience Badge */}
-            <div className="absolute -bottom-6 -right-6 bg-cyan-500 text-black p-8 rounded-[2rem] shadow-2xl">
+            <div
+              data-animate-on-view
+              className="absolute -bottom-6 -right-6 bg-cyan-500 text-black p-8 rounded-[2rem] shadow-2xl opacity-0"
+              style={{ animationDelay: '0.6s' }}
+            >
               <p className="text-4xl font-black italic leading-none">10+</p>
               <p className="text-xs font-bold uppercase tracking-widest mt-1">Years On Set</p>
             </div>
@@ -352,7 +439,8 @@ const App = () => {
           {/* Text Content Side */}
           <div className="w-full md:w-1/2">
             <h2 className="text-4xl md:text-6xl font-black mb-6 uppercase italic leading-tight">
-              Meet <br />Richard Helou
+              <span className="flex flex-wrap gap-[2px]">{renderLetters('Meet', 0)}</span>
+              <span className="flex flex-wrap gap-[2px] text-cyan-400 mt-2">{renderLetters('Richard Helou', 0.35)}</span>
             </h2>
             <p className="text-neutral-400 text-lg mb-8 leading-relaxed">
               With a decade of experience across narrative features, commercials, and high-stakes episodic TV, 
@@ -361,7 +449,11 @@ const App = () => {
             
             <div className="space-y-4">
               {/* Membership/Award Item 1 */}
-              <div className="flex items-center gap-4 text-neutral-200">
+              <div
+                data-animate-on-view
+                className="flex items-center gap-4 text-neutral-200 opacity-0"
+                style={{ animationDelay: '0.45s' }}
+              >
                 <div className="w-10 h-10 rounded-xl bg-neutral-800 flex items-center justify-center">
                   <Award className="text-cyan-400 w-5 h-5" />
                 </div>
@@ -371,7 +463,11 @@ const App = () => {
               </div>
               
               {/* Membership/Award Item 2 */}
-              <div className="flex items-center gap-4 text-neutral-200">
+              <div
+                data-animate-on-view
+                className="flex items-center gap-4 text-neutral-200 opacity-0"
+                style={{ animationDelay: '0.6s' }}
+              >
                 <div className="w-10 h-10 rounded-xl bg-neutral-800 flex items-center justify-center">
                   <Film className="text-cyan-400 w-5 h-5" />
                 </div>
@@ -730,6 +826,18 @@ const App = () => {
           <div className="relative z-10 text-center">
             <h2 className="text-4xl md:text-6xl font-black uppercase italic mb-8">Questions? <br /><span className="text-cyan-400">Let's Talk</span></h2>
             <p className="text-neutral-400 mb-12 text-lg max-w-2xl mx-auto">Prefer to reach out directly? Contact me via email or social media.</p>
+            <div className="flex flex-col items-center gap-2 mb-10">
+              <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-cyan-400 shadow-lg shadow-cyan-500/20">
+                <img
+                  src="/Richrad.png"
+                  alt="Richard Helou"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+              <p className="font-black uppercase tracking-widest text-sm text-neutral-200">Richard Helou</p>
+              <p className="text-neutral-500 text-xs tracking-[0.25em] uppercase">Sound Mixer • Designer</p>
+            </div>
             <div className="flex items-center justify-center gap-6 text-neutral-400">
               <a href="mailto:richard@helousound.com" className="hover:text-cyan-400 transition-colors">
                 <Mail className="w-6 h-6" />
