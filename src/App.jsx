@@ -161,18 +161,31 @@ const App = () => {
   const services = [
     {
       title: 'Production Sound',
-      description: 'On-set dialogue capture for narrative, commercial, and corporate projects with professional timecode sync.',
+      subtitle: 'On-Set Sound Recording',
+      description: 'Clean dialogue capture with professional mixers, wireless systems, and timecode sync — designed for fast-moving sets and demanding productions.',
       icon: <Mic2 className="w-8 h-8 text-cyan-400" />,
+      highlighted: true
     },
     {
-      title: 'Sound Design',
-      description: 'Creating immersive sonic worlds and custom SFX that breathe life into every frame.',
-      icon: <Waves className="w-8 h-8 text-cyan-400" />,
+      title: 'Wireless & RF Management',
+      subtitle: 'Reliable Wireless Audio',
+      description: 'Multi-talent lav setups, boom integration, and RF coordination to ensure clean, uninterrupted audio on set.',
+      icon: <Radio className="w-8 h-8 text-cyan-400" />,
+      highlighted: false
     },
     {
-      title: 'Dialogue Edit',
-      description: 'Precision cleanup, noise restoration, and ADR matching for studio-quality performances.',
+      title: 'Timecode & Camera Sync',
+      subtitle: 'Production-Ready Sync',
+      description: 'Accurate timecode for multi-camera shoots to streamline post-production and avoid costly sync issues.',
+      icon: <Clock className="w-8 h-8 text-cyan-400" />,
+      highlighted: false
+    },
+    {
+      title: 'Director / Client Monitoring',
+      subtitle: 'IFB & Playback Monitoring',
+      description: 'Real-time monitoring for directors, script supervisors, and clients — hear what the audience will hear.',
       icon: <Volume2 className="w-8 h-8 text-cyan-400" />,
+      highlighted: false
     }
   ];
 
@@ -466,15 +479,6 @@ const App = () => {
                 alt="Richard Helou in Studio" 
               />
             </div>
-            {/* Experience Badge */}
-            <div
-              data-animate-on-view
-              className="absolute -bottom-6 -right-6 bg-cyan-500 text-black p-8 rounded-[2rem] shadow-2xl opacity-0"
-              style={{ animationDelay: '0.6s' }}
-            >
-              <p className="text-4xl font-black italic leading-none">10+</p>
-              <p className="text-xs font-bold uppercase tracking-widest mt-1">Years On Set</p>
-            </div>
           </div>
 
           {/* Text Content Side */}
@@ -489,33 +493,39 @@ const App = () => {
             </p>
             
             <div className="space-y-4">
-              {/* Membership/Award Item 1 */}
-              <div
+              {/* Social Link Item 1 - Instagram */}
+              <a
+                href="https://www.instagram.com/helousound/"
+                target="_blank"
+                rel="noopener noreferrer"
                 data-animate-on-view
-                className="flex items-center gap-4 text-neutral-200 opacity-0"
+                className="flex items-center gap-4 text-neutral-200 hover:text-cyan-400 transition-colors opacity-0 cursor-pointer"
                 style={{ animationDelay: '0.45s' }}
               >
-                <div className="w-10 h-10 rounded-xl bg-neutral-800 flex items-center justify-center">
-                  <Award className="text-cyan-400 w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-neutral-800 flex items-center justify-center group-hover:bg-cyan-500/20">
+                  <Instagram className="text-cyan-400 w-5 h-5" />
                 </div>
                 <span className="text-sm font-bold uppercase tracking-wider">
-                  CAS Associate Member
+                  Instagram
                 </span>
-              </div>
+              </a>
               
-              {/* Membership/Award Item 2 */}
-              <div
+              {/* Social Link Item 2 - Twitter/X */}
+              <a
+                href="https://twitter.com/helousound"
+                target="_blank"
+                rel="noopener noreferrer"
                 data-animate-on-view
-                className="flex items-center gap-4 text-neutral-200 opacity-0"
+                className="flex items-center gap-4 text-neutral-200 hover:text-cyan-400 transition-colors opacity-0 cursor-pointer"
                 style={{ animationDelay: '0.6s' }}
               >
-                <div className="w-10 h-10 rounded-xl bg-neutral-800 flex items-center justify-center">
-                  <Film className="text-cyan-400 w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-neutral-800 flex items-center justify-center group-hover:bg-cyan-500/20">
+                  <Twitter className="text-cyan-400 w-5 h-5" />
                 </div>
                 <span className="text-sm font-bold uppercase tracking-wider">
-                  Global Production Experience
+                  X
                 </span>
-              </div>
+              </a>
             </div>
           </div>
         </div>
@@ -527,12 +537,20 @@ const App = () => {
           <h2 className="text-4xl md:text-6xl font-black uppercase text-center mb-16 italic">
             What We <span className="text-cyan-400">Offer</span>
           </h2>
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {services.map((service, i) => (
-              <div key={i} className="group p-8 bg-gradient-to-br from-neutral-800/50 to-neutral-900 border border-neutral-700 rounded-2xl hover:border-cyan-500/50 transition-all hover:shadow-lg hover:shadow-cyan-500/10">
-                <div className="mb-4">{service.icon}</div>
-                <h3 className="text-2xl font-bold uppercase mb-4 group-hover:text-cyan-400 transition-colors">{service.title}</h3>
-                <p className="text-neutral-400">{service.description}</p>
+              <div 
+                key={i} 
+                className={`group p-8 rounded-2xl transition-all ${
+                  service.highlighted
+                    ? 'bg-gradient-to-br from-cyan-500/20 to-neutral-900 border-2 border-cyan-400 shadow-lg shadow-cyan-500/20 lg:col-span-1 lg:row-span-2 flex flex-col justify-start'
+                    : 'bg-gradient-to-br from-neutral-800/50 to-neutral-900 border border-neutral-700 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/10'
+                }`}
+              >
+                <div className={`mb-6 ${service.highlighted ? 'text-4xl' : ''}`}>{service.icon}</div>
+                <h3 className={`font-black uppercase mb-2 group-hover:text-cyan-400 transition-colors ${service.highlighted ? 'text-xl text-cyan-400' : 'text-2xl'}`}>{service.title}</h3>
+                <h4 className={`font-bold uppercase mb-4 text-cyan-400/70 text-sm`}>{service.subtitle}</h4>
+                <p className={`${service.highlighted ? 'text-neutral-200' : 'text-neutral-400'}`}>{service.description}</p>
               </div>
             ))}
           </div>
@@ -865,10 +883,10 @@ const App = () => {
                 />
               </div>
               <p className="font-black uppercase tracking-widest text-sm text-neutral-200">Richard Helou</p>
-              <p className="text-neutral-500 text-xs tracking-[0.25em] uppercase">Sound Mixer • Designer</p>
+              <p className="text-neutral-500 text-xs tracking-[0.25em] uppercase">Production Sound Mixer • Location Sound Recordist</p>
             </div>
             <div className="flex items-center justify-center gap-6 text-neutral-400">
-              <a href="mailto:richard@helousound.com" className="hover:text-cyan-400 transition-colors">
+              <a href="mailto:helousound@gmail.com" className="hover:text-cyan-400 transition-colors">
                 <Mail className="w-6 h-6" />
               </a>
               <a href="https://www.instagram.com/helousound/" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">
@@ -877,7 +895,7 @@ const App = () => {
               <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">
                 <Twitter className="w-6 h-6" />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">
+              <a href="https://www.linkedin.com/in/richardhelou/" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">
                 <Linkedin className="w-6 h-6" />
               </a>
             </div>
