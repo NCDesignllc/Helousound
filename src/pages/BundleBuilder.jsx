@@ -370,10 +370,9 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
                   <p className="text-xs sm:text-sm text-neutral-500 uppercase tracking-widest mb-0.5 sm:mb-1">Total Per Day</p>
                   <p className="text-2xl sm:text-4xl font-black text-cyan-400">${calculateTotal()}</p>
                 </div>
-                <button className="w-full sm:w-auto bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-300 text-black px-6 sm:px-8 py-3 sm:py-4 min-h-[48px] rounded-xl sm:rounded-2xl font-black uppercase tracking-widest text-sm sm:text-base transition-all transform hover:scale-105 active:scale-95 whitespace-nowrap">
-                <button
+                <button 
                   onClick={() => setIsQuoteModalOpen(true)}
-                  className="bg-cyan-500 hover:bg-cyan-400 text-black px-8 py-4 rounded-2xl font-black uppercase tracking-widest transition-all transform hover:scale-105 whitespace-nowrap"
+                  className="w-full sm:w-auto bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-300 text-black px-6 sm:px-8 py-3 sm:py-4 min-h-[48px] rounded-xl sm:rounded-2xl font-black uppercase tracking-widest text-sm sm:text-base transition-all transform hover:scale-105 active:scale-95 whitespace-nowrap"
                 >
                   Request Quote
                 </button>
