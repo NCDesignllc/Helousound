@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Volume2, Plus, Minus, ShoppingCart, ArrowLeft } from 'lucide-react';
+import { useSelectedPackage } from '../context/SelectedPackageContext.jsx';
 
-const BundleBuilder = ({ onBack }) => {
+const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
+  const { selectedPackage: contextPackage } = useSelectedPackage();
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [cart, setCart] = useState([]);
   const [scrolled, setScrolled] = useState(false);
@@ -11,6 +13,17 @@ const BundleBuilder = ({ onBack }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Set the initially selected package from context or props
+
+  useEffect(() => {
+    // Use context package if available, otherwise use props
+    if (contextPackage) {
+      setSelectedPackage(contextPackage);
+    } else if (initialPackage) {
+      setSelectedPackage(initialPackage);
+    }
+  }, [contextPackage, initialPackage]);
 
   const packages = [
     {

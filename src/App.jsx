@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import BundleBuilder from './pages/BundleBuilder.jsx';
 import WhySoundMatters from './pages/WhySoundMatters.jsx';
+import BundleModal from './components/BundleModal.jsx';
+import { useSelectedPackage } from './context/SelectedPackageContext.jsx';
 
 // Utility to animate headings letter-by-letter when they enter view
 // When keepWordsTogether is true, each word stays intact so lines wrap at word boundaries.
@@ -84,10 +86,14 @@ const renderLetters = (text, startDelay = 0, keepWordsTogether = false) => {
 };
 
 const App = () => {
+  const { selectedPackage, setSelectedPackage } = useSelectedPackage();
   const [currentPage, setCurrentPage] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedPackageId, setSelectedPackageId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalPackageData, setModalPackageData] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -164,11 +170,6 @@ const App = () => {
       title: 'Dialogue Edit',
       description: 'Precision cleanup, noise restoration, and ADR matching for studio-quality performances.',
       icon: <Volume2 className="w-8 h-8 text-cyan-400" />,
-    },
-    {
-      title: 'Final Mixing',
-      description: 'Stereo and Surround 5.1 mixing optimized for broadcast, theatrical, and streaming standards.',
-      icon: <Music className="w-8 h-8 text-cyan-400" />,
     }
   ];
 
@@ -315,10 +316,29 @@ const App = () => {
     }
   };
 
+  const handlePackageCardClick = (pkg) => {
+    setSelectedPackageId(pkg.name);
+    setModalPackageData(pkg);
+    setSelectedPackage(pkg);
+    setIsModalOpen(true);
+  };
+
+  const handleBundleModalConfirm = () => {
+    setIsModalOpen(false);
+    // Pass the selected package to BundleBuilder via context
+    setCurrentPage('bundle');
+  };
+
+  const handleBundleModalClose = () => {
+    setIsModalOpen(false);
+    // Keep the card selected
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.phone || !formData.shootDate || !formData.location || !formData.productionType) {
       alert('Please fill in all required fields');
+
       return;
     }
     
@@ -354,7 +374,7 @@ const App = () => {
   };
 
   if (currentPage === 'bundle') {
-    return <BundleBuilder onBack={() => setCurrentPage('home')} />;
+    return <BundleBuilder onBack={() => setCurrentPage('home')} selectedPackage={selectedPackage} />;
   }
 
   if (currentPage === 'why-sound') {
@@ -429,7 +449,7 @@ const App = () => {
             <span className="flex justify-center flex-wrap gap-[3px] text-cyan-400 mt-2">{renderLetters('Demanding Filmmakers', 0.4, true)}</span>
           </h1>
           <p className="text-lg md:text-xl text-neutral-300 mb-12 max-w-2xl mx-auto">
-            On-set recording, sound design, dialogue editing, and final mixing. Bringing pristine audio to your vision.
+            On-set recording, sound design, and dialogue editing. Bringing pristine audio to your vision.
           </p>
           <a href="#quote-form" className="inline-block bg-cyan-500 hover:bg-cyan-400 text-black px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105">
             Get a Quote
@@ -556,13 +576,17 @@ const App = () => {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {packages.map((pkg, i) => (
-              <div
+              <button
                 key={i}
-                className={`p-8 rounded-2xl transition-all ${
-                  pkg.highlighted
-                    ? 'bg-gradient-to-br from-cyan-500/20 to-neutral-900 border-2 border-cyan-500 shadow-lg shadow-cyan-500/20 transform lg:scale-105'
-                    : 'bg-neutral-800/50 border border-neutral-700 hover:border-cyan-500/50'
+                onClick={() => handlePackageCardClick(pkg)}
+                className={`p-8 rounded-2xl transition-all text-left ${
+                  selectedPackageId === pkg.name
+                    ? 'bg-gradient-to-br from-cyan-500/30 to-neutral-900 border-2 border-cyan-400 shadow-lg shadow-cyan-500/30 transform scale-105 ring-2 ring-cyan-400/50'
+                    : pkg.highlighted
+                    ? 'bg-gradient-to-br from-cyan-500/20 to-neutral-900 border-2 border-cyan-500 shadow-lg shadow-cyan-500/20 transform lg:scale-105 hover:border-cyan-400 hover:shadow-cyan-400/30'
+                    : 'bg-neutral-800/50 border border-neutral-700 hover:border-cyan-500/50 hover:bg-neutral-800/70'
                 }`}
+                aria-pressed={selectedPackageId === pkg.name}
               >
                 <h3 className="text-2xl font-black uppercase mb-2">{pkg.name}</h3>
                 <p className="text-cyan-400 text-sm font-bold uppercase mb-6">{pkg.target}</p>
@@ -575,7 +599,7 @@ const App = () => {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </button>
             ))}
           </div>
 
@@ -867,6 +891,14 @@ const App = () => {
         </div>
         <p className="text-neutral-600 text-[10px] uppercase tracking-[0.4em]">Richard Helou • Professional Audio Post & Location Recording © 2024</p>
       </footer>
+
+      {/* Bundle Modal */}
+      <BundleModal
+        isOpen={isModalOpen}
+        onClose={handleBundleModalClose}
+        onConfirm={handleBundleModalConfirm}
+        packageName={modalPackageData?.name || ''}
+      />
     </div>
   );
 };
