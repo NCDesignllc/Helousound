@@ -216,7 +216,7 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
             ))}
           </div>
           <p className="text-center text-sm text-neutral-500 mt-8 max-w-2xl mx-auto">
-            * Labor rate: $800 per 10-hour day. All packages include equipment rental and labor.
+            * Labor: $800/10hrs +OT x1.5 after 8hrs, x2 after 12hrs and will be reflected in the final quote
           </p>
         </div>
       </section>
