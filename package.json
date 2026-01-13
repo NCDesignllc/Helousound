@@ -20,6 +20,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "server": "cd server && npm run dev",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src --ext js,jsx"

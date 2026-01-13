@@ -1,13 +1,15 @@
+
 import React, { useState, useEffect } from 'react';
 import { Volume2, Plus, Minus, ShoppingCart, ArrowLeft } from 'lucide-react';
 import { useSelectedPackage } from '../context/SelectedPackageContext.jsx';
-
+import QuoteModal from '../components/QuoteModal.jsx';
 const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
   const { selectedPackage: contextPackage } = useSelectedPackage();
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [cart, setCart] = useState({});
   const [scrolled, setScrolled] = useState(false);
 
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
@@ -130,6 +132,22 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
 
   const showSummary = selectedPackage || getTotalAddonsCount() > 0;
   const containerPadding = showSummary ? 'pb-40' : '';
+
+  const getBundleData = () => {
+    const addonsList = addons
+      .filter(addon => getAddonQuantity(addon.item) > 0)
+      .map(addon => ({
+        item: addon.item,
+        price: addon.price,
+        quantity: getAddonQuantity(addon.item)
+      }));
+
+    return {
+      selectedPackage,
+      addons: addonsList,
+      totalPerDay: calculateTotal()
+    };
+  };
 
   return (
     <div className={`min-h-screen bg-neutral-950 text-neutral-100 ${containerPadding}`}>
@@ -336,7 +354,10 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
                   <p className="text-sm text-neutral-500 uppercase tracking-widest mb-1">Total Per Day</p>
                   <p className="text-4xl font-black text-cyan-400">${calculateTotal()}</p>
                 </div>
-                <button className="bg-cyan-500 hover:bg-cyan-400 text-black px-8 py-4 rounded-2xl font-black uppercase tracking-widest transition-all transform hover:scale-105 whitespace-nowrap">
+                <button
+                  onClick={() => setIsQuoteModalOpen(true)}
+                  className="bg-cyan-500 hover:bg-cyan-400 text-black px-8 py-4 rounded-2xl font-black uppercase tracking-widest transition-all transform hover:scale-105 whitespace-nowrap"
+                >
                   Request Quote
                 </button>
               </div>
@@ -344,8 +365,16 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
           </div>
         </div>
       )}
+      {/* Quote Modal */}
+      <QuoteModal
+        isOpen={isQuoteModalOpen}
+        onClose={() => setIsQuoteModalOpen(false)}
+        bundle={getBundleData()}
+      />
     </div>
   );
 };
 
+
 export default BundleBuilder;
+

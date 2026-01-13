@@ -153,9 +153,8 @@ const App = () => {
 
   const navLinks = [
     { name: 'Services', href: '#services' },
-    { name: 'Why Sound Matters', href: '#why-sound-page', onClick: (e) => { e.preventDefault(); setCurrentPage('why-sound'); } },
+    { name: 'Why Sound Matters', href: '#why-sound-page', onClick: (e) => { e.preventDefault(); setCurrentPage('why-sound'); window.scrollTo(0, 0); } },
     { name: 'Custom sound package', href: '#bundle', onClick: (e) => { e.preventDefault(); setCurrentPage('bundle'); } },
-    { name: 'Quote', href: '#quote-form' },
   ];
 
   const services = [
@@ -461,9 +460,9 @@ const App = () => {
             <span className="flex justify-center flex-wrap gap-[3px]">{renderLetters('Professional Audio for', 0, true)}</span>
             <span className="flex justify-center flex-wrap gap-[3px] text-cyan-400 mt-2">{renderLetters('Demanding Filmmakers', 0.4, true)}</span>
           </h1>
-          <a href="#quote-form" className="inline-block bg-cyan-500 hover:bg-cyan-400 text-black px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105">
+          <button onClick={() => setCurrentPage('bundle')} className="inline-block bg-cyan-500 hover:bg-cyan-400 text-black px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105">
             Get a Quote
-          </a>
+          </button>
         </div>
       </section>
 
@@ -626,243 +625,24 @@ const App = () => {
         </div>
       </section>
 
-      {/* Quote Form Section */}
+      {/* Build Custom Package Section */}
       <section id="quote-form" className="py-24 px-6 bg-neutral-950">
-        <div className="max-w-2xl mx-auto">
-          {!isFormOpen ? (
-            <div className="text-center">
-              <h2 className="text-4xl md:text-6xl font-black uppercase mb-8 italic">
-                Ready for <span className="text-cyan-400">Professional Audio?</span>
-              </h2>
-              <button
-                onClick={() => setIsFormOpen(true)}
-                className="bg-cyan-500 hover:bg-cyan-400 text-black px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105"
-              >
-                Get a Quote
-              </button>
-            </div>
-          ) : (
-            <>
-              <h2 className="text-4xl md:text-6xl font-black uppercase text-center mb-4 italic">
-                Get a <span className="text-cyan-400">Quote</span>
-              </h2>
-              <p className="text-neutral-400 text-center mb-12">
-                Fill out the form below and I'll respond within 24 business hours with a personalized quote.
-              </p>
-
-              {formSubmitted ? (
-                <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-12 text-center">
-                  <CheckCircle2 className="w-16 h-16 text-green-400 mx-auto mb-6" />
-                  <h3 className="text-2xl font-black uppercase mb-2">Thanks! We'll Review Your Details</h3>
-                  <p className="text-neutral-300 text-lg">
-                    We'll review your shoot details and respond shortly with a personalized quote.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={handleFormSubmit} className="bg-gradient-to-br from-neutral-900 to-neutral-950 border border-neutral-800 rounded-2xl p-8 md:p-12 space-y-8">
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold uppercase tracking-widest text-cyan-400">Required Information</h3>
-                
-                <div>
-                  <label className="block text-sm font-bold uppercase tracking-widest mb-2">Your Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleFormChange}
-                    placeholder="e.g., Jane Smith"
-                    className="w-full bg-neutral-800/50 border border-neutral-700 rounded-xl px-4 py-3 text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-cyan-500 transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold uppercase tracking-widest mb-2">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleFormChange}
-                    placeholder="jane@production.com"
-                    className="w-full bg-neutral-800/50 border border-neutral-700 rounded-xl px-4 py-3 text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-cyan-500 transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold uppercase tracking-widest mb-2">Phone</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleFormChange}
-                    placeholder="+1 (555) 123-4567"
-                    className="w-full bg-neutral-800/50 border border-neutral-700 rounded-xl px-4 py-3 text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-cyan-500 transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold uppercase tracking-widest mb-2">Shoot Date(s)</label>
-                  <input
-                    type="date"
-                    name="shootDate"
-                    value={formData.shootDate}
-                    onChange={handleFormChange}
-                    className="w-full bg-neutral-800/50 border border-neutral-700 rounded-xl px-4 py-3 text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-cyan-500 transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold uppercase tracking-widest mb-2">Location / Studio</label>
-                  <input
-                    type="text"
-                    name="location"
-                    value={formData.location}
-                    onChange={handleFormChange}
-                    placeholder="e.g., Downtown LA, Stage 5, Brooklyn Loft"
-                    className="w-full bg-neutral-800/50 border border-neutral-700 rounded-xl px-4 py-3 text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-cyan-500 transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold uppercase tracking-widest mb-2">Production Type</label>
-                  <select
-                    name="productionType"
-                    value={formData.productionType}
-                    onChange={handleFormChange}
-                    className="w-full bg-neutral-800/50 border border-neutral-700 rounded-xl px-4 py-3 text-neutral-100 focus:outline-none focus:border-cyan-500 transition-colors"
-                  >
-                    <option value="">Select a type...</option>
-                    {productionTypes.map(type => (
-                      <option key={type} value={type}>{type}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold uppercase tracking-widest text-cyan-400">Optional Details</h3>
-
-                <div>
-                  <label className="block text-sm font-bold uppercase tracking-widest mb-2">Package Selection</label>
-                  <select
-                    name="packageSelection"
-                    value={formData.packageSelection}
-                    onChange={handleFormChange}
-                    className="w-full bg-neutral-800/50 border border-neutral-700 rounded-xl px-4 py-3 text-neutral-100 focus:outline-none focus:border-cyan-500 transition-colors"
-                  >
-                    <option value="">Select a package...</option>
-                    {packages.map(pkg => (
-                      <option key={pkg.name} value={pkg.name}>
-                        {pkg.name} ({pkg.displayPrice})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold uppercase tracking-widest mb-2">Estimated Shoot Hours</label>
-                  <input
-                    type="number"
-                    name="estimatedHours"
-                    value={formData.estimatedHours}
-                    onChange={handleFormChange}
-                    placeholder="e.g., 12"
-                    min="1"
-                    className="w-full bg-neutral-800/50 border border-neutral-700 rounded-xl px-4 py-3 text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-cyan-500 transition-colors"
-                  />
-                </div>
-
-                {formData.packageSelection && (() => {
-                  const estimate = calculateEstimate();
-                  if (!estimate) return null;
-                  return (
-                    <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-[1.5rem] p-6">
-                      <h4 className="font-bold uppercase tracking-widest mb-4 text-cyan-400">Estimate Breakdown</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-neutral-400">{formData.packageSelection}</span>
-                          <span className="font-bold">${estimate.packagePrice}/day</span>
-                        </div>
-                        {estimate.addOnsCost > 0 && (
-                          <div className="flex justify-between">
-                            <span className="text-neutral-400">Add-On Gear ({formData.addOns.length} items)</span>
-                            <span className="font-bold">${estimate.addOnsCost}/day</span>
-                          </div>
-                        )}
-                        <div className="border-t border-neutral-700 pt-2 mt-2">
-                          <div className="flex justify-between font-bold">
-                            <span>Daily Rate</span>
-                            <span>${estimate.dailyTotal}</span>
-                          </div>
-                        </div>
-                        {estimate.days > 1 && (
-                          <div className="text-neutral-400 text-xs mt-2">
-                            {estimate.days} days × ${estimate.dailyTotal}/day
-                          </div>
-                        )}
-                        <div className="border-t border-cyan-500/30 pt-2 mt-2">
-                          <div className="flex justify-between text-base font-black text-cyan-400">
-                            <span>Total Estimate</span>
-                            <span>${estimate.grandTotal.toLocaleString()}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-xs text-neutral-500 mt-4 italic">*Non-binding estimate. Final quote may vary based on production requirements.</p>
-                    </div>
-                  );
-                })()}
-
-                <div>
-                  <label className="block text-sm font-bold uppercase tracking-widest mb-4">Add-On Gear</label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {addons.map((addon, i) => (
-                      <label key={i} className="flex items-center gap-3 p-3 bg-neutral-800/30 border border-neutral-700 rounded-lg hover:border-cyan-500/50 transition-colors cursor-pointer">
-                        <input
-                          type="checkbox"
-                          value={addon.item}
-                          checked={formData.addOns.includes(addon.item)}
-                          onChange={handleFormChange}
-                          className="w-4 h-4 accent-cyan-500 cursor-pointer"
-                        />
-                        <span className="text-sm font-medium">{addon.item}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold uppercase tracking-widest mb-2">Additional Notes</label>
-                  <textarea
-                    name="additionalNotes"
-                    value={formData.additionalNotes}
-                    onChange={handleFormChange}
-                    placeholder="Tell us more about your project, any special requirements, or questions..."
-                    rows="4"
-                    className="w-full bg-neutral-800/50 border border-neutral-700 rounded-xl px-4 py-3 text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-cyan-500 transition-colors resize-none"
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                <button
-                  type="submit"
-                  className="flex-1 bg-cyan-500 hover:bg-cyan-400 text-black px-8 py-4 rounded-2xl font-black uppercase tracking-widest transition-all transform hover:scale-105"
-                >
-                  Get Quote
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsFormOpen(false)}
-                  className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all"
-                >
-                  Close
-                </button>
-              </div>
-
-              <p className="text-xs text-neutral-500 text-center">We'll respond to your inquiry within 24 business hours.</p>
-            </form>
-              )}
-            </>
-          )}
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-4xl md:text-6xl font-black uppercase mb-8 italic">
+            Ready for <span className="text-cyan-400">Professional Audio?</span>
+          </h2>
+          <p className="text-neutral-400 text-xl max-w-2xl mx-auto mb-12">
+            Build a custom sound package with exactly the equipment and services you need, then request your personalized quote.
+          </p>
+          <button
+            onClick={() => {
+              setCurrentPage('bundle');
+              window.scrollTo(0, 0);
+            }}
+            className="bg-cyan-500 hover:bg-cyan-400 text-black px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105"
+          >
+            Build Custom Package
+          </button>
         </div>
       </section>
 
