@@ -153,9 +153,8 @@ const App = () => {
 
   const navLinks = [
     { name: 'Services', href: '#services' },
-    { name: 'Why Sound Matters', href: '#why-sound-page', onClick: (e) => { e.preventDefault(); setCurrentPage('why-sound'); } },
+    { name: 'Why Sound Matters', href: '#why-sound-page', onClick: (e) => { e.preventDefault(); setCurrentPage('why-sound'); window.scrollTo(0, 0); } },
     { name: 'Custom sound package', href: '#bundle', onClick: (e) => { e.preventDefault(); setCurrentPage('bundle'); } },
-    { name: 'Quote', href: '#quote-form' },
   ];
 
   const services = [
@@ -473,7 +472,7 @@ const App = () => {
           {/* CTA button with minimum touch target size */}
           <a href="#quote-form" className="inline-block bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-300 text-black px-8 sm:px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105 active:scale-95 min-h-[48px]">
             Get a Quote
-          </a>
+          </button>
         </div>
       </section>
 
@@ -882,6 +881,24 @@ const App = () => {
               )}
             </>
           )}
+      {/* Build Custom Package Section */}
+      <section id="quote-form" className="py-24 px-6 bg-neutral-950">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-4xl md:text-6xl font-black uppercase mb-8 italic">
+            Ready for <span className="text-cyan-400">Professional Audio?</span>
+          </h2>
+          <p className="text-neutral-400 text-xl max-w-2xl mx-auto mb-12">
+            Build a custom sound package with exactly the equipment and services you need, then request your personalized quote.
+          </p>
+          <button
+            onClick={() => {
+              setCurrentPage('bundle');
+              window.scrollTo(0, 0);
+            }}
+            className="bg-cyan-500 hover:bg-cyan-400 text-black px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105"
+          >
+            Build Custom Package
+          </button>
         </div>
       </section>
 
