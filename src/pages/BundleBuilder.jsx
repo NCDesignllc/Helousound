@@ -4,9 +4,7 @@ import { Volume2, Plus, Minus, ShoppingCart, ArrowLeft } from 'lucide-react';
 import { useSelectedPackage } from '../context/SelectedPackageContext.jsx';
 import QuoteModal from '../components/QuoteModal.jsx';
 const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
-  const { selectedPackage: contextPackage } = useSelectedPackage();
-  const [selectedPackage, setSelectedPackage] = useState(null);
-  const [cart, setCart] = useState({});
+  const { selectedPackage, setSelectedPackage, cart, setCart } = useSelectedPackage();
   const [scrolled, setScrolled] = useState(false);
 
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
@@ -16,16 +14,12 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Set the initially selected package from context or props
-
+  // Initialize from props if context is empty (e.g., direct navigation)
   useEffect(() => {
-    // Use context package if available, otherwise use props
-    if (contextPackage) {
-      setSelectedPackage(contextPackage);
-    } else if (initialPackage) {
+    if (!selectedPackage && initialPackage) {
       setSelectedPackage(initialPackage);
     }
-  }, [contextPackage, initialPackage]);
+  }, [initialPackage, selectedPackage, setSelectedPackage]);
 
   const packages = [
     {
