@@ -153,6 +153,7 @@ The application uses Tailwind CSS responsive breakpoints:
 - `sm:` (640px) - Small devices
 - `md:` (768px) - Medium devices (tablet)
 - `lg:` (1024px) - Large devices (desktop)
+- `xl:` (1280px) - Extra large devices (wide desktop) - Available but not heavily used in current codebase
 
 | Breakpoint | Component | Behavior | Status |
 |------------|-----------|----------|--------|
@@ -190,7 +191,7 @@ The application uses Tailwind CSS responsive breakpoints:
 ### Landscape Mode Observations
 
 **iPhone Landscape (812×375)**:
-- Fixed bottom summary bar takes ~50% of viewport height
+- Fixed bottom summary bar height: approximately 180px (48% of 375px viewport height)
 - Content remains scrollable above the bar
 - Recommendation: Consider collapsing the bundle summary in landscape to show only total + CTA
 
