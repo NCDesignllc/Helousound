@@ -117,6 +117,9 @@ const App = () => {
 
   // Trigger animations when elements enter the viewport
   useEffect(() => {
+    // Only run on home page
+    if (currentPage !== 'home') return;
+
     const elements = document.querySelectorAll('[data-animate-on-view]');
     if (!elements.length) return;
 
@@ -135,7 +138,7 @@ const App = () => {
 
     elements.forEach(el => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [currentPage]);
 
   const productionTypes = [
     'Narrative Film',
@@ -151,7 +154,7 @@ const App = () => {
   const navLinks = [
     { name: 'Services', href: '#services' },
     { name: 'Why Sound Matters', href: '#why-sound-page', onClick: (e) => { e.preventDefault(); setCurrentPage('why-sound'); } },
-    { name: 'Build Bundle', href: '#bundle', onClick: (e) => { e.preventDefault(); setCurrentPage('bundle'); } },
+    { name: 'Custom sound package', href: '#bundle', onClick: (e) => { e.preventDefault(); setCurrentPage('bundle'); } },
     { name: 'Quote', href: '#quote-form' },
   ];
 
@@ -195,17 +198,17 @@ const App = () => {
   const packages = [
     {
       name: "Interview Quick Kit",
-      price: 350,
-      displayPrice: "$350",
+      price: 500,
+      displayPrice: "$500",
       target: "Corporate & Sit-downs",
       features: [
         "Compact Mixer / Recorder",
         "1× Wireless Lavalier",
         "Audio Feed to Camera",
         "Fast Setup / Small Footprint",
-        "Budget-Friendly Entry"
+        "Budget-Friendly Entry",
+        
       ],
-      included: ["Additional Wireless Lav"],
       highlighted: false
     },
     {
@@ -218,9 +221,9 @@ const App = () => {
         "2× Wireless Lavaliers",
         "Timecode Sync + Smart Slate",
         "IFB Headset (Director/Script)",
-        "Designed for Scripted Content"
+        "Designed for Scripted Content",
+        
       ],
-      included: ["Wireless Boom Mic", "IFB Headset (Individual)", "Timecode Sync Box"],
       highlighted: true
     },
     {
@@ -233,9 +236,9 @@ const App = () => {
         "Boom + 2× Wireless Lavs",
         "Wireless Camera Link (S/M)",
         "IFB Headsets & Timecode",
-        "Broadcast-Ready Feed"
+        "Broadcast-Ready Feed",
+        
       ],
-      included: ["Wireless Boom Mic", "IFB Headset (Individual)", "Wireless Camera Audio Link", "Timecode Sync Box", "Timecode Smart Slate"],
       highlighted: false
     },
     {
@@ -250,7 +253,6 @@ const App = () => {
         "Active PA Playback Speakers",
         "Optimized for Complex Sets"
       ],
-      included: ["Wireless Boom Mic", "IFB Headset (Individual)", "Wireless Camera Audio Link", "Timecode Sync Box", "Timecode Smart Slate", "Playback Speakers (Pair)"],
       highlighted: false
     }
   ];
@@ -336,9 +338,24 @@ const App = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.phone || !formData.shootDate || !formData.location || !formData.productionType) {
-      alert('Please fill in all required fields');
 
+    const requiredFields = [
+      { key: 'name', label: 'Name' },
+      { key: 'email', label: 'Email' },
+      { key: 'phone', label: 'Phone' },
+      { key: 'shootDate', label: 'Shoot Date' },
+      { key: 'location', label: 'Location' },
+      { key: 'productionType', label: 'Production Type' },
+    ];
+
+    const missingFields = requiredFields
+      .filter((field) => !formData[field.key])
+      .map((field) => field.label);
+
+    if (missingFields.length > 0) {
+      alert(
+        `Please fill in all required fields: ${missingFields.join(', ')}`
+      );
       return;
     }
     
@@ -448,9 +465,6 @@ const App = () => {
             <span className="flex justify-center flex-wrap gap-[3px]">{renderLetters('Professional Audio for', 0, true)}</span>
             <span className="flex justify-center flex-wrap gap-[3px] text-cyan-400 mt-2">{renderLetters('Demanding Filmmakers', 0.4, true)}</span>
           </h1>
-          <p className="text-lg md:text-xl text-neutral-300 mb-12 max-w-2xl mx-auto">
-            On-set recording, sound design, and dialogue editing. Bringing pristine audio to your vision.
-          </p>
           <a href="#quote-form" className="inline-block bg-cyan-500 hover:bg-cyan-400 text-black px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105">
             Get a Quote
           </a>
@@ -587,6 +601,7 @@ const App = () => {
                     : 'bg-neutral-800/50 border border-neutral-700 hover:border-cyan-500/50 hover:bg-neutral-800/70'
                 }`}
                 aria-pressed={selectedPackageId === pkg.name}
+                aria-label={`Select ${pkg.name} package for ${pkg.displayPrice}`}
               >
                 <h3 className="text-2xl font-black uppercase mb-2">{pkg.name}</h3>
                 <p className="text-cyan-400 text-sm font-bold uppercase mb-6">{pkg.target}</p>
@@ -601,6 +616,10 @@ const App = () => {
                 </ul>
               </button>
             ))}
+          </div>
+
+          <div className="text-center text-neutral-400 text-sm">
+            <p>* All package rates include professional audio labor at $800 per 10-hour day. Add optional gear as needed for your production.</p>
           </div>
 
         </div>

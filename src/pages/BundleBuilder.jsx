@@ -5,7 +5,7 @@ import { useSelectedPackage } from '../context/SelectedPackageContext.jsx';
 const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
   const { selectedPackage: contextPackage } = useSelectedPackage();
   const [selectedPackage, setSelectedPackage] = useState(null);
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState({});
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -28,17 +28,16 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
   const packages = [
     {
       name: "Interview Quick Kit",
-      price: 350,
-      displayPrice: "$350",
+      price: 500,
+      displayPrice: "$500",
       target: "Corporate & Sit-downs",
       features: [
-        "Compact Mixer / Recorder",
-        "1× Wireless Lavalier",
+        "1 x Mixer/Recorder",
+        "1 x Boom Mic",
+        "2 × Wireless Lavalier",
         "Audio Feed to Camera",
-        "Fast Setup / Small Footprint",
-        "Budget-Friendly Entry"
+        
       ],
-      included: ["Additional Wireless Lav"],
       highlighted: false
     },
     {
@@ -47,13 +46,13 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
       displayPrice: "$750",
       target: "Shorts & Indie Features",
       features: [
-        "Mixer/Recorder + Boom Kit",
-        "2× Wireless Lavaliers",
-        "Timecode Sync + Smart Slate",
-        "IFB Headset (Director/Script)",
-        "Designed for Scripted Content"
+        "1 x Mixer/Recorder",
+        "1 x Boom Mic",
+        "2 × Wireless Lavaliers",
+        "2 x Timecode Sync",
+        "2 x IFB Headset (Director/Script)",
+        
       ],
-      included: ["Wireless Boom Mic", "IFB Headset (Individual)", "Timecode Sync Box"],
       highlighted: true
     },
     {
@@ -62,62 +61,79 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
       displayPrice: "$900",
       target: "Branded & Episodic",
       features: [
-        "Pro Mixer / Recorder",
-        "Boom + 2× Wireless Lavs",
-        "Wireless Camera Link (S/M)",
-        "IFB Headsets & Timecode",
-        "Broadcast-Ready Feed"
+        "1 x Mixer/Recorder",
+        "1 x Boom Mic",
+        "3 × Wireless Lavaliers",
+        "2 x Timecode Sync",
+        "3 x IFB Headset (Director/Script)",
+        
       ],
-      included: ["Wireless Boom Mic", "IFB Headset (Individual)", "Wireless Camera Audio Link", "Timecode Sync Box", "Timecode Smart Slate"],
       highlighted: false
     },
-    {
-      name: "Full Sound Cart",
-      price: 1200,
-      displayPrice: "$1,200",
-      target: "Features & Multi-Cam",
-      features: [
-        "Digital Mixer Sound Cart",
-        "Up to 4× Wireless Lavs",
-        "RF Distro & High-Gain Antennas",
-        "Active PA Playback Speakers",
-        "Optimized for Complex Sets"
-      ],
-      included: ["Wireless Boom Mic", "IFB Headset (Individual)", "Wireless Camera Audio Link", "Timecode Sync Box", "Timecode Smart Slate", "Playback Speakers (Pair)"],
-      highlighted: false
-    }
+    
   ];
 
   const addons = [
     { item: "Additional Wireless Lav", rate: "$100", price: 100 },
     { item: "Wireless Boom Mic", rate: "$100", price: 100 },
-    { item: "IFB Headset (Individual)", rate: "$50", price: 50 },
+    { item: "IFB Headset", rate: "$50", price: 50 },
     { item: "Wireless Camera Audio Link", rate: "$75", price: 75 },
     { item: "Timecode Sync Box", rate: "$50", price: 50 },
-    { item: "Timecode Smart Slate", rate: "$75", price: 75 },
-    { item: "Playback Speakers (Pair)", rate: "$250", price: 250 }
+    { item: "Timecode Smart Slate", rate: "$75", price: 75 },  
   ];
 
-  const handleAddToCart = (addon) => {
-    setCart([...cart, { ...addon, id: Date.now() }]);
+  const handleUpdateQuantity = (addonName, newQuantity) => {
+    const qty = Math.max(0, newQuantity);
+    setCart(prev => {
+      const updated = { ...prev };
+      if (qty === 0) {
+        delete updated[addonName];
+      } else {
+        updated[addonName] = { qty, id: updated[addonName]?.id || `${Date.now()}-${Math.random().toString(36).slice(2, 11)}` };
+      }
+      return updated;
+    });
   };
 
-  const handleRemoveFromCart = (id) => {
-    setCart(cart.filter(item => item.id !== id));
+  const handleIncrement = (addonName) => {
+    const currentQty = cart[addonName]?.qty || 0;
+    handleUpdateQuantity(addonName, currentQty + 1);
+  };
+
+  const handleDecrement = (addonName) => {
+    const currentQty = cart[addonName]?.qty || 0;
+    handleUpdateQuantity(addonName, currentQty - 1);
   };
 
   const calculateTotal = () => {
     const packagePrice = selectedPackage ? selectedPackage.price : 0;
-    const addonsTotal = cart.reduce((sum, item) => sum + item.price, 0);
+    const addonsTotal = addons.reduce((sum, addon) => {
+      const cartItem = cart[addon.item];
+      const qty = cartItem?.qty || 0;
+      return sum + addon.price * qty;
+    }, 0);
     return packagePrice + addonsTotal;
   };
 
-  const isAddonIncluded = (addonName) => {
-    return selectedPackage?.included.includes(addonName);
+  const getAddonQuantity = (addonName) => {
+    const cartItem = cart[addonName];
+    return cartItem?.qty || 0;
   };
 
+  const getAddonLineTotal = (addonName, price) => {
+    const qty = getAddonQuantity(addonName);
+    return price * qty;
+  };
+
+  const getTotalAddonsCount = () => {
+    return Object.values(cart).reduce((sum, item) => sum + (item?.qty || 0), 0);
+  };
+
+  const showSummary = selectedPackage || getTotalAddonsCount() > 0;
+  const containerPadding = showSummary ? 'pb-40' : '';
+
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100">
+    <div className={`min-h-screen bg-neutral-950 text-neutral-100 ${containerPadding}`}>
       {/* Navigation */}
       <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-neutral-950/90 backdrop-blur-md py-4 border-b border-neutral-800' : 'bg-transparent py-6'}`}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
@@ -136,9 +152,9 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
           </div>
           <div className="relative">
             <ShoppingCart className="w-6 h-6 text-cyan-400" />
-            {cart.length > 0 && (
+            {getTotalAddonsCount() > 0 && (
               <span className="absolute -top-2 -right-2 bg-cyan-500 text-black text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                {cart.length}
+                {getTotalAddonsCount()}
               </span>
             )}
           </div>
@@ -148,7 +164,7 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
       {/* Hero */}
       <section className="pt-32 pb-16 px-6 text-center">
         <h1 className="text-5xl md:text-7xl font-black uppercase italic mb-6">
-          Let's Build <span className="text-cyan-400">A Bundle</span>
+          Let's Build <span className="text-cyan-400">A Package</span>
         </h1>
         <p className="text-neutral-400 text-lg max-w-3xl mx-auto mb-8">
           Start by selecting a package, then customize it with additional gear to perfectly match your production needs.
@@ -159,7 +175,7 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
       <section className="py-12 px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-black uppercase italic mb-12 text-center">
-            Choose Your <span className="text-cyan-400">Base Package</span>
+            Choose Your <span className="text-cyan-400">Sound Package</span>
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {packages.map((pkg, idx) => (
@@ -199,6 +215,10 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
               </div>
             ))}
           </div>
+          <div className="text-center text-neutral-500 text-sm mt-8">
+            <p>* All package rates include professional audio labor $800 per 10-hour day +OT x1.5 after 8hrs, x2 after 12hrs and will reflect in final quote.</p>
+          </div>
+          
         </div>
       </section>
 
@@ -209,22 +229,20 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
             Customize With <span className="text-cyan-400">Add-Ons</span>
           </h2>
           <p className="text-neutral-500 text-center mb-12 max-w-2xl mx-auto">
-            {selectedPackage 
-              ? `Enhance your ${selectedPackage.name} package with additional gear`
-              : 'Select a package above to customize with add-ons'}
+            Add optional gear to enhance your production setup. Mix and match as needed.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {addons.map((addon, idx) => {
-              const included = isAddonIncluded(addon.item);
-              const inCart = cart.filter(item => item.item === addon.item).length;
+              const qty = getAddonQuantity(addon.item);
+              const isSelected = qty > 0;
               
               return (
                 <div
                   key={idx}
-                  className={`p-6 rounded-2xl border transition-all ${
-                    included
-                      ? 'bg-cyan-500/5 border-cyan-700 opacity-60'
-                      : 'bg-neutral-900 border-neutral-800 hover:border-neutral-700'
+                  className={`p-6 rounded-2xl border-2 transition-all duration-200 ${
+                    isSelected
+                      ? 'bg-cyan-500/15 border-cyan-400 shadow-lg shadow-cyan-500/20'
+                      : 'bg-neutral-900 border-neutral-800 hover:border-cyan-500/50'
                   }`}
                 >
                   <div className="flex items-start justify-between mb-4">
@@ -233,23 +251,37 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
                       <p className="text-cyan-400 text-2xl font-black">{addon.rate}</p>
                       <p className="text-xs text-neutral-600 uppercase tracking-widest">Per Day</p>
                     </div>
-                    {!included && selectedPackage && (
-                      <button
-                        onClick={() => handleAddToCart(addon)}
-                        className="bg-cyan-500 hover:bg-cyan-400 text-black p-3 rounded-xl transition-all transform hover:scale-110"
-                      >
-                        <Plus className="w-5 h-5" />
-                      </button>
-                    )}
-                  </div>
-                  {included && (
-                    <div className="text-xs text-cyan-400 uppercase tracking-widest font-bold">
-                      ✓ Included in package
+                    <div className="flex-shrink-0 ml-4 text-right">
+                      <p className="text-sm font-bold text-cyan-400 mb-2">Qty {qty}</p>
                     </div>
-                  )}
-                  {inCart > 0 && !included && (
-                    <div className="text-xs text-cyan-400 uppercase tracking-widest font-bold">
-                      {inCart}× in cart
+                  </div>
+                  
+                  <div className="flex items-center gap-2 mb-4">
+                    <button
+                      onClick={() => handleDecrement(addon.item)}
+                      disabled={qty === 0}
+                      className={`flex-1 py-2 px-3 rounded-lg font-bold transition-all ${
+                        qty === 0
+                          ? 'bg-neutral-800 text-neutral-600 cursor-not-allowed'
+                          : 'bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/50'
+                      }`}
+                    >
+                      <Minus className="w-4 h-4 mx-auto" />
+                    </button>
+                    <div className="flex-1 text-center py-2 px-3 bg-neutral-800/50 rounded-lg font-bold text-cyan-400">
+                      {qty}
+                    </div>
+                    <button
+                      onClick={() => handleIncrement(addon.item)}
+                      className="flex-1 py-2 px-3 rounded-lg font-bold transition-all bg-cyan-500 text-black hover:bg-cyan-400 border border-cyan-400"
+                    >
+                      <Plus className="w-4 h-4 mx-auto" />
+                    </button>
+                  </div>
+
+                  {isSelected && (
+                    <div className="text-xs text-cyan-400 uppercase tracking-widest font-bold flex items-center gap-1">
+                      <span>✓</span> Added to bundle
                     </div>
                   )}
                 </div>
@@ -260,7 +292,7 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
       </section>
 
       {/* Cart Summary - Fixed Bottom */}
-      {(selectedPackage || cart.length > 0) && (
+      {(selectedPackage || getTotalAddonsCount() > 0) && (
         <div className="fixed bottom-0 left-0 right-0 bg-neutral-950 border-t border-neutral-800 py-6 px-6 z-40">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
@@ -270,23 +302,28 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
                   {selectedPackage && (
                     <div className="flex items-center justify-between text-sm bg-neutral-900 p-3 rounded-xl">
                       <span className="font-bold">{selectedPackage.name}</span>
-                      <span className="text-cyan-400 font-black">{selectedPackage.displayPrice}</span>
+                      <span className="text-cyan-400 font-black">{selectedPackage.displayPrice}/day</span>
                     </div>
                   )}
-                  {cart.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between text-sm bg-neutral-900 p-3 rounded-xl">
-                      <span>{item.item}</span>
-                      <div className="flex items-center gap-3">
-                        <span className="text-cyan-400 font-bold">${item.price}</span>
-                        <button
-                          onClick={() => handleRemoveFromCart(item.id)}
-                          className="text-red-400 hover:text-red-300 transition-colors"
-                        >
-                          <Minus className="w-4 h-4" />
-                        </button>
+                  {addons.map((addon) => {
+                    const qty = getAddonQuantity(addon.item);
+                    if (qty === 0) return null;
+                    const lineTotal = getAddonLineTotal(addon.item, addon.price);
+                    return (
+                      <div key={addon.item} className="flex items-center justify-between text-sm bg-neutral-900 p-3 rounded-xl">
+                        <span className="font-bold">{addon.item} × {qty}</span>
+                        <div className="flex items-center gap-3">
+                          <span className="text-cyan-400 font-bold">${lineTotal}/day</span>
+                          <button
+                            onClick={() => handleUpdateQuantity(addon.item, 0)}
+                            className="text-red-400 hover:text-red-300 transition-colors"
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
               <div className="flex items-center gap-6">

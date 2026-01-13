@@ -69,9 +69,10 @@ const BundleModal = ({ isOpen, onClose, onConfirm, packageName }) => {
       {/* Modal */}
       <div
         ref={modalRef}
-        role="alertdialog"
+        role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
+        aria-describedby="modal-description"
         className="relative z-10 bg-neutral-900 border border-neutral-800 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl transition-all transform scale-100 opacity-100"
       >
         {/* Close button */}
@@ -87,7 +88,7 @@ const BundleModal = ({ isOpen, onClose, onConfirm, packageName }) => {
         <h2 id="modal-title" className="text-2xl font-black uppercase mb-2 pr-8">
           Build a Custom Bundle?
         </h2>
-        <p className="text-neutral-300 mb-8">
+        <p id="modal-description" className="text-neutral-300 mb-8">
           Would you like to start building a custom bundle based on the <span className="text-cyan-400 font-bold">{packageName}</span> package?
         </p>
 
