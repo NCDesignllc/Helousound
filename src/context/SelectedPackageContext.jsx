@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 
 export const SelectedPackageContext = createContext();
 
@@ -13,7 +13,7 @@ export const SelectedPackageProvider = ({ children }) => {
 };
 
 export const useSelectedPackage = () => {
-  const context = React.useContext(SelectedPackageContext);
+  const context = useContext(SelectedPackageContext);
   if (!context) {
     throw new Error('useSelectedPackage must be used within SelectedPackageProvider');
   }

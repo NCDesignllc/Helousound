@@ -206,8 +206,7 @@ const App = () => {
         "1× Wireless Lavalier",
         "Audio Feed to Camera",
         "Fast Setup / Small Footprint",
-        "Budget-Friendly Entry",
-        
+        "Budget-Friendly Entry"
       ],
       highlighted: false
     },
@@ -221,8 +220,7 @@ const App = () => {
         "2× Wireless Lavaliers",
         "Timecode Sync + Smart Slate",
         "IFB Headset (Director/Script)",
-        "Designed for Scripted Content",
-        
+        "Designed for Scripted Content"
       ],
       highlighted: true
     },
@@ -236,22 +234,7 @@ const App = () => {
         "Boom + 2× Wireless Lavs",
         "Wireless Camera Link (S/M)",
         "IFB Headsets & Timecode",
-        "Broadcast-Ready Feed",
-        
-      ],
-      highlighted: false
-    },
-    {
-      name: "Full Sound Cart",
-      price: 1200,
-      displayPrice: "$1,200",
-      target: "Features & Multi-Cam",
-      features: [
-        "Digital Mixer Sound Cart",
-        "Up to 4× Wireless Lavs",
-        "RF Distro & High-Gain Antennas",
-        "Active PA Playback Speakers",
-        "Optimized for Complex Sets"
+        "Broadcast-Ready Feed"
       ],
       highlighted: false
     }
@@ -588,7 +571,7 @@ const App = () => {
             Transparent <span className="text-cyan-400">Rates</span>
           </h2>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 justify-items-center max-w-5xl mx-auto">
             {packages.map((pkg, i) => (
               <button
                 key={i}
@@ -618,9 +601,9 @@ const App = () => {
             ))}
           </div>
 
-          <div className="text-center text-neutral-400 text-sm">
-            <p>* All package rates include professional audio labor at $800 per 10-hour day. Add optional gear as needed for your production.</p>
-          </div>
+          <p className="text-center text-sm text-neutral-500 mb-16 max-w-2xl mx-auto">
+            * Labor: $800/10hrs +OT x1.5 after 8hrs, x2 after 12hrs and will be reflected in final quote*
+          </p>
 
         </div>
       </section>

@@ -34,7 +34,7 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
       features: [
         "1 x Mixer/Recorder",
         "1 x Boom Mic",
-        "2 × Wireless Lavalier",
+        "2× Wireless Lavalier",
         "Audio Feed to Camera",
         
       ],
@@ -48,10 +48,10 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
       features: [
         "1 x Mixer/Recorder",
         "1 x Boom Mic",
-        "2 × Wireless Lavaliers",
-        "2 x Timecode Sync",
-        "2 x IFB Headset (Director/Script)",
-        
+        "2× Wireless Lavaliers",
+        "2 x Timecode Sync ",
+        "2 x IFB Headset ",
+       
       ],
       highlighted: true
     },
@@ -61,16 +61,14 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
       displayPrice: "$900",
       target: "Branded & Episodic",
       features: [
-        "1 x Mixer/Recorder",
+       "1 x Mixer/Recorder",
         "1 x Boom Mic",
-        "3 × Wireless Lavaliers",
-        "2 x Timecode Sync",
-        "3 x IFB Headset (Director/Script)",
-        
+        "2× Wireless Lavaliers",
+        "2 x Timecode Sync ",
+        "3 x IFB Headset ",
       ],
       highlighted: false
-    },
-    
+    }
   ];
 
   const addons = [
@@ -89,7 +87,7 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
       if (qty === 0) {
         delete updated[addonName];
       } else {
-        updated[addonName] = { qty, id: updated[addonName]?.id || `${Date.now()}-${Math.random().toString(36).slice(2, 11)}` };
+        updated[addonName] = { qty, id: updated[addonName]?.id || Date.now() + Math.random() };
       }
       return updated;
     });
@@ -107,12 +105,13 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
 
   const calculateTotal = () => {
     const packagePrice = selectedPackage ? selectedPackage.price : 0;
+    const laborCost = selectedPackage ? 800 : 0;
     const addonsTotal = addons.reduce((sum, addon) => {
       const cartItem = cart[addon.item];
       const qty = cartItem?.qty || 0;
       return sum + addon.price * qty;
     }, 0);
-    return packagePrice + addonsTotal;
+    return packagePrice + laborCost + addonsTotal;
   };
 
   const getAddonQuantity = (addonName) => {
@@ -177,7 +176,7 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
           <h2 className="text-3xl md:text-4xl font-black uppercase italic mb-12 text-center">
             Choose Your <span className="text-cyan-400">Sound Package</span>
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center max-w-5xl mx-auto">
             {packages.map((pkg, idx) => (
               <div
                 key={idx}
@@ -200,6 +199,7 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
                   <p className="text-neutral-500 text-sm uppercase tracking-widest mb-4">{pkg.target}</p>
                   <p className="text-4xl font-black text-cyan-400">{pkg.displayPrice}</p>
                   <p className="text-xs text-neutral-600 uppercase tracking-widest mt-1">Per Day</p>
+                  <p className="text-xs text-cyan-400/70 mt-1">Includes labor</p>
                 </div>
                 <ul className="space-y-3 mb-6">
                   {pkg.features.map((feature, i) => (
@@ -215,10 +215,9 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
               </div>
             ))}
           </div>
-          <div className="text-center text-neutral-500 text-sm mt-8">
-            <p>* All package rates include professional audio labor $800 per 10-hour day +OT x1.5 after 8hrs, x2 after 12hrs and will reflect in final quote.</p>
-          </div>
-          
+          <p className="text-center text-sm text-neutral-500 mt-8 max-w-2xl mx-auto">
+            * Labor rate: $800 per 10-hour day. All packages include equipment rental and labor.
+          </p>
         </div>
       </section>
 
@@ -303,6 +302,12 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
                     <div className="flex items-center justify-between text-sm bg-neutral-900 p-3 rounded-xl">
                       <span className="font-bold">{selectedPackage.name}</span>
                       <span className="text-cyan-400 font-black">{selectedPackage.displayPrice}/day</span>
+                    </div>
+                  )}
+                  {selectedPackage && (
+                    <div className="flex items-center justify-between text-sm bg-neutral-900 p-3 rounded-xl">
+                      <span className="font-bold">Labor (10-hour day)</span>
+                      <span className="text-cyan-400 font-black">$800/day</span>
                     </div>
                   )}
                   {addons.map((addon) => {
