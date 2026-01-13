@@ -951,7 +951,7 @@ const App = () => {
           <Volume2 className="text-cyan-400 w-4 h-4 sm:w-5 sm:h-5" />
           <span className="font-black tracking-tighter uppercase italic text-sm sm:text-base">Helou Sound</span>
         </div>
-        <p className="text-neutral-600 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em]">Richard Helou • Professional Audio Post & Location Recording © 2024</p>
+        <p className="text-neutral-600 text-[10px] sm:text-[10px] uppercase tracking-[0.15em] sm:tracking-[0.4em]">Richard Helou • Professional Audio Post & Location Recording © 2024</p>
       </footer>
 
       {/* Bundle Modal */}

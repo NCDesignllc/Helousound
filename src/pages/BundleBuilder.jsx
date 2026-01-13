@@ -207,8 +207,8 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
                   <h3 className="text-lg sm:text-xl font-black uppercase mb-2">{pkg.name}</h3>
                   <p className="text-neutral-500 text-xs sm:text-sm uppercase tracking-widest mb-3 sm:mb-4">{pkg.target}</p>
                   <p className="text-3xl sm:text-4xl font-black text-cyan-400">{pkg.displayPrice}</p>
-                  <p className="text-[10px] sm:text-xs text-neutral-600 uppercase tracking-widest mt-1">Per Day</p>
-                  <p className="text-[10px] sm:text-xs text-cyan-400/70 mt-1">Includes labor</p>
+                  <p className="text-xs text-neutral-600 uppercase tracking-widest mt-1">Per Day</p>
+                  <p className="text-xs text-cyan-400/70 mt-1">Includes labor</p>
                 </div>
                 <ul className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
                   {pkg.features.map((feature, i) => (

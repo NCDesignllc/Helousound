@@ -147,7 +147,7 @@ const WhySoundMatters = ({ onBack }) => {
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
               <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
                 <p className="text-xs sm:text-sm font-bold uppercase tracking-widest text-cyan-400">Professional Sound Cart</p>
-                <p className="text-[10px] sm:text-xs text-neutral-400 mt-1">Mobile mixing station for complex productions</p>
+                <p className="text-xs text-neutral-400 mt-1">Mobile mixing station for complex productions</p>
               </div>
             </div>
             
@@ -161,7 +161,7 @@ const WhySoundMatters = ({ onBack }) => {
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
               <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
                 <p className="text-xs sm:text-sm font-bold uppercase tracking-widest text-cyan-400">Location Recording Setup</p>
-                <p className="text-[10px] sm:text-xs text-neutral-400 mt-1">Versatile cart for on-location shoots</p>
+                <p className="text-xs text-neutral-400 mt-1">Versatile cart for on-location shoots</p>
               </div>
             </div>
             
@@ -175,7 +175,7 @@ const WhySoundMatters = ({ onBack }) => {
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
               <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
                 <p className="text-xs sm:text-sm font-bold uppercase tracking-widest text-cyan-400">Audio Mixing Gear</p>
-                <p className="text-[10px] sm:text-xs text-neutral-400 mt-1">Industry-standard recording equipment</p>
+                <p className="text-xs text-neutral-400 mt-1">Industry-standard recording equipment</p>
               </div>
             </div>
             
@@ -189,7 +189,7 @@ const WhySoundMatters = ({ onBack }) => {
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
               <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
                 <p className="text-xs sm:text-sm font-bold uppercase tracking-widest text-cyan-400">Boom Recording Session</p>
-                <p className="text-[10px] sm:text-xs text-neutral-400 mt-1">Precision dialogue capture on set</p>
+                <p className="text-xs text-neutral-400 mt-1">Precision dialogue capture on set</p>
               </div>
             </div>
           </div>
@@ -388,7 +388,7 @@ const WhySoundMatters = ({ onBack }) => {
           <Volume2 className="text-cyan-400 w-4 h-4 sm:w-5 sm:h-5" />
           <span className="font-black tracking-tighter uppercase italic text-sm sm:text-base">Helou Sound</span>
         </div>
-        <p className="text-neutral-600 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em]">Richard Helou • Professional Audio Post & Location Recording © 2024</p>
+        <p className="text-neutral-600 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em]">Richard Helou • Professional Audio Post & Location Recording © 2024</p>
       </footer>
     </div>
   );
