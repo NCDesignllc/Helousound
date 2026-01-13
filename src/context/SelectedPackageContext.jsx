@@ -4,9 +4,19 @@ export const SelectedPackageContext = createContext();
 
 export const SelectedPackageProvider = ({ children }) => {
   const [selectedPackage, setSelectedPackage] = useState(null);
+  const [cart, setCart] = useState({});
+
+  // Helper to clear cart when needed
+  const clearCart = () => setCart({});
 
   return (
-    <SelectedPackageContext.Provider value={{ selectedPackage, setSelectedPackage }}>
+    <SelectedPackageContext.Provider value={{ 
+      selectedPackage, 
+      setSelectedPackage,
+      cart,
+      setCart,
+      clearCart
+    }}>
       {children}
     </SelectedPackageContext.Provider>
   );
