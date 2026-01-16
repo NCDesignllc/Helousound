@@ -35,7 +35,7 @@ on:
     branches:
       - "sync-fork"
   schedule:
-    - cron: '0 0 * * *' #every 24h
+    - cron: '0 * * * *' #every 24h
   workflow_dispatch:
 
 permissions:
