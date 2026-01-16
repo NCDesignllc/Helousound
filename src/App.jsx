@@ -452,13 +452,12 @@ const App = () => {
       {/* Hero Section */}
       <section className="relative pt-28 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6 overflow-hidden min-h-screen flex items-center justify-center">
         <div className="absolute inset-0">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover opacity-40 filter grayscale"
+         
+          <img
             src="/Abstract_Audio_Wave_Video_Generation.mp4"
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover opacity-30 filter grayscale"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-neutral-950/50 to-neutral-950"></div>
         </div>
