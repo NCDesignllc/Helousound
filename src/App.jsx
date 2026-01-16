@@ -318,10 +318,15 @@ const App = () => {
     setIsModalOpen(true);
   };
 
+  const navigateToBundle = () => {
+    setCurrentPage('bundle');
+    window.scrollTo(0, 0);
+  };
+
   const handleBundleModalConfirm = () => {
     setIsModalOpen(false);
     // Pass the selected package to BundleBuilder via context
-    setCurrentPage('bundle');
+    navigateToBundle();
   };
 
   const handleBundleModalClose = () => {
@@ -482,9 +487,13 @@ const App = () => {
             <span className="flex justify-center flex-wrap gap-[2px] sm:gap-[3px] text-cyan-400 mt-2">{renderLetters('Demanding Filmmakers', 0.4, true)}</span>
           </h1>
           {/* CTA button with minimum touch target size */}
-          <a href="#quote-form" className="inline-block bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-300 text-black px-8 sm:px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105 active:scale-95 min-h-[48px]">
+          <button 
+            onClick={navigateToBundle}
+            className="bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-300 text-black px-8 sm:px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105 active:scale-95 min-h-[48px]"
+            aria-label="Build your custom sound package"
+          >
             Get a Quote
-          </a>
+          </button>
         </div>
       </section>
 
@@ -658,8 +667,9 @@ const App = () => {
                 Ready for <span className="text-cyan-400">Professional Audio?</span>
               </h2>
               <button
-                onClick={() => setIsFormOpen(true)}
+                onClick={navigateToBundle}
                 className="bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-300 text-black px-8 sm:px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105 active:scale-95 min-h-[48px]"
+                aria-label="Build your custom sound package"
               >
                 Get a Quote
               </button>
