@@ -8,18 +8,6 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
   const [scrolled, setScrolled] = useState(false);
 
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Initialize from props if context is empty (e.g., direct navigation)
-  useEffect(() => {
-    if (!selectedPackage && initialPackage) {
-      setSelectedPackage(initialPackage);
-    }
-  }, [initialPackage, selectedPackage, setSelectedPackage]);
 
   const packages = [
     {
@@ -66,6 +54,30 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
       highlighted: false
     }
   ];
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Initialize from props if context is empty (e.g., direct navigation)
+  useEffect(() => {
+    if (!selectedPackage && initialPackage) {
+      setSelectedPackage(initialPackage);
+    }
+  }, [initialPackage, selectedPackage, setSelectedPackage]);
+
+  // Auto-select "Narrative Film" on initial page load if no package is selected
+  useEffect(() => {
+    if (!selectedPackage && !initialPackage) {
+      const narrativeFilmPackage = packages.find(pkg => pkg.name === "Narrative Film");
+      if (narrativeFilmPackage) {
+        setSelectedPackage(narrativeFilmPackage);
+      }
+    }
+  }, [selectedPackage, initialPackage, setSelectedPackage]);
+
 
   const addons = [
     { item: "Additional Wireless Lav", rate: "$100", price: 100 },
