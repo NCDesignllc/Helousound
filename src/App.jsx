@@ -17,6 +17,7 @@ import BundleBuilder from './pages/BundleBuilder.jsx';
 import WhySoundMatters from './pages/WhySoundMatters.jsx';
 import BundleModal from './components/BundleModal.jsx';
 import { useSelectedPackage } from './context/SelectedPackageContext.jsx';
+import { encodeFormData } from './utils/netlifyForms';
 
 // Utility to animate headings letter-by-letter when they enter view
 // When keepWordsTogether is true, each word stays intact so lines wrap at word boundaries.
@@ -279,13 +280,6 @@ const App = () => {
     };
   };
 
-  // Encode data for Netlify Forms
-  const encode = (data) => {
-    return Object.keys(data)
-      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-      .join('&');
-  };
-
   const handleFormChange = (e) => {
     const { name, value, type, checked } = e.target;
     
@@ -382,7 +376,7 @@ const App = () => {
       const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: encode(netlifyFormData)
+        body: encodeFormData(netlifyFormData)
       });
 
       if (!response.ok) {

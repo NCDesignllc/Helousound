@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, AlertCircle, CheckCircle, Loader } from 'lucide-react';
+import { encodeFormData } from '../utils/netlifyForms';
 
 const QuoteModal = ({ isOpen, onClose, bundle }) => {
   const [formData, setFormData] = useState({
@@ -85,13 +86,6 @@ const QuoteModal = ({ isOpen, onClose, bundle }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Encode data for Netlify Forms
-  const encode = (data) => {
-    return Object.keys(data)
-      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-      .join('&');
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -134,7 +128,7 @@ const QuoteModal = ({ isOpen, onClose, bundle }) => {
       const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: encode(netlifyFormData)
+        body: encodeFormData(netlifyFormData)
       });
 
       if (!response.ok) {
