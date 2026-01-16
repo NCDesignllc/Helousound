@@ -85,6 +85,13 @@ const QuoteModal = ({ isOpen, onClose, bundle }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Encode data for Netlify Forms
+  const encode = (data) => {
+    return Object.keys(data)
+      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+      .join('&');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -97,7 +104,7 @@ const QuoteModal = ({ isOpen, onClose, bundle }) => {
     setSubmitError('');
 
     try {
-      // Build the quote payload
+      // Build the quote payload for display
       const addonsList = bundle.addons.map(addon => ({
         item: addon.item,
         pricePerDay: addon.price,
@@ -105,77 +112,43 @@ const QuoteModal = ({ isOpen, onClose, bundle }) => {
         lineTotalPerDay: addon.price * addon.quantity
       }));
 
-      const payload = {
-        selectedPackage: {
-          name: bundle.selectedPackage.name,
-          pricePerDay: bundle.selectedPackage.price,
-          displayPrice: bundle.selectedPackage.displayPrice
-        },
-        addons: addonsList,
-        totals: {
-          totalPerDay: bundle.totalPerDay
-        },
-        client: {
-          fullName: formData.fullName.trim(),
-          email: formData.email.trim(),
-          phone: formData.phone.trim() || null,
-          productionName: formData.productionName.trim() || null,
-          address: formData.address.trim() || null,
-          shootDate: formData.shootDate,
-          productionDurationDays: parseInt(formData.productionDurationDays, 10),
-          notes: formData.notes.trim() || null
-        }
+      // Create formatted data for Netlify
+      const netlifyFormData = {
+        'form-name': 'quote-request',
+        'fullName': formData.fullName.trim(),
+        'email': formData.email.trim(),
+        'phone': formData.phone.trim() || '',
+        'productionName': formData.productionName.trim() || '',
+        'address': formData.address.trim() || '',
+        'shootDate': formData.shootDate,
+        'productionDurationDays': formData.productionDurationDays,
+        'notes': formData.notes.trim() || '',
+        'selectedPackage': bundle.selectedPackage.name,
+        'packagePrice': bundle.selectedPackage.displayPrice,
+        'addons': JSON.stringify(addonsList),
+        'totalPerDay': bundle.totalPerDay,
+        'estimatedTotal': bundle.totalPerDay * parseInt(formData.productionDurationDays, 10)
       };
 
-      // Send to backend
-      const response = await fetch('http://localhost:5000/api/request-quote', {
+      // Submit to Netlify Forms
+      const response = await fetch('/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encode(netlifyFormData)
       });
 
-      // Read response body as text first
-      const text = await response.text();
-      let message = text;
-      
-      // Try to parse as JSON to extract error message
-      try {
-        const jsonData = JSON.parse(text);
-        message = jsonData?.error || jsonData?.message || text;
-      } catch (e) {
-        // If not JSON, use raw text
-      }
-
-      // Check if response is OK
       if (!response.ok) {
-        const error = new Error(message || `HTTP ${response.status}`);
-        console.error('Quote submission HTTP error:', {
-          status: response.status,
-          message: error.message,
-          payload: payload,
-          responseText: text
-        });
-        setSubmitError(error.message);
-        setSubmitStatus('error');
-      } else {
-        setSubmitStatus('success');
-        // Close modal after success
-        setTimeout(() => {
-          onClose();
-        }, 2000);
+        throw new Error('Form submission failed');
       }
+
+      setSubmitStatus('success');
+      // Close modal after success
+      setTimeout(() => {
+        onClose();
+      }, 2000);
     } catch (error) {
-      // Network or parsing error
-      const errorMessage = error.message || 'Network error. Please try again.';
-      const networkError = error instanceof TypeError ? 'Network error. Please try again.' : errorMessage;
-      console.error('Error submitting quote:', {
-        message: error.message,
-        stack: error.stack,
-        payload: formData
-      });
-      setSubmitError(networkError);
+      console.error('Error submitting quote:', error);
+      setSubmitError('There was an error submitting your request. Please try again or contact us directly.');
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -249,7 +222,7 @@ const QuoteModal = ({ isOpen, onClose, bundle }) => {
               <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold text-green-400">Quote Request Sent!</p>
-                <p className="text-sm text-green-300/80 mt-1">We'll review your request and get back to you soon.</p>
+                <p className="text-sm text-green-300/80 mt-1">We&apos;ll review your request and get back to you soon.</p>
               </div>
             </div>
           )}
@@ -266,7 +239,18 @@ const QuoteModal = ({ isOpen, onClose, bundle }) => {
 
           {/* Form */}
           {submitStatus !== 'success' && (
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form 
+              name="quote-request" 
+              method="POST" 
+              data-netlify="true" 
+              data-netlify-honeypot="bot-field"
+              onSubmit={handleSubmit} 
+              className="space-y-5"
+            >
+              {/* Hidden fields for Netlify */}
+              <input type="hidden" name="form-name" value="quote-request" />
+              <input type="hidden" name="bot-field" />
+              
               {/* Full Name */}
               <div>
                 <label className="block text-sm font-bold uppercase text-neutral-300 mb-2 tracking-widest">
@@ -426,7 +410,7 @@ const QuoteModal = ({ isOpen, onClose, bundle }) => {
               </button>
 
               <p className="text-xs text-neutral-500 text-center">
-                * Required fields. We'll reply to your email with a detailed quote.
+                * Required fields. We&apos;ll reply to your email with a detailed quote.
               </p>
             </form>
           )}

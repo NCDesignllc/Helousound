@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Mic2, 
-  Music, 
   Volume2, 
-  Waves, 
-  Film, 
   CheckCircle2,
   Instagram, 
   Twitter, 
@@ -13,11 +10,7 @@ import {
   X,
   Clock,
   Radio,
-  Truck,
   AlertCircle,
-  Settings,
-  Award,
-  Zap,
   Mail
 } from 'lucide-react';
 import BundleBuilder from './pages/BundleBuilder.jsx';
@@ -286,6 +279,13 @@ const App = () => {
     };
   };
 
+  // Encode data for Netlify Forms
+  const encode = (data) => {
+    return Object.keys(data)
+      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+      .join('&');
+  };
+
   const handleFormChange = (e) => {
     const { name, value, type, checked } = e.target;
     
@@ -334,7 +334,7 @@ const App = () => {
     // Keep the card selected
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
     const requiredFields = [
@@ -360,32 +360,57 @@ const App = () => {
     const estimate = calculateEstimate();
     const totalEstimate = estimate ? estimate.grandTotal : 0;
     
-    const formDataWithEstimate = {
-      ...formData,
-      estimatedCost: totalEstimate,
-      numberOfDays: estimate ? estimate.days : 1
-    };
-    
-    console.log('Form submitted:', formDataWithEstimate);
-    console.log('Sending confirmation email to:', formData.email);
-    setFormSubmitted(true);
-    
-    setTimeout(() => {
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        shootDate: '',
-        location: '',
-        productionType: '',
-        packageSelection: '',
-        estimatedHours: '',
-        additionalNotes: '',
-        uploadCallSheet: null,
-        addOns: []
+    try {
+      // Prepare data for Netlify
+      const netlifyFormData = {
+        'form-name': 'contact-quote',
+        'name': formData.name,
+        'email': formData.email,
+        'phone': formData.phone,
+        'shootDate': formData.shootDate,
+        'location': formData.location,
+        'productionType': formData.productionType,
+        'packageSelection': formData.packageSelection || 'Not selected',
+        'estimatedHours': formData.estimatedHours || 'Not specified',
+        'additionalNotes': formData.additionalNotes,
+        'addOns': formData.addOns.join(', ') || 'None',
+        'estimatedCost': totalEstimate,
+        'numberOfDays': estimate ? estimate.days : 1
+      };
+
+      // Submit to Netlify Forms
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encode(netlifyFormData)
       });
-      setFormSubmitted(false);
-    }, 3000);
+
+      if (!response.ok) {
+        throw new Error('Form submission failed');
+      }
+
+      setFormSubmitted(true);
+      
+      setTimeout(() => {
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          shootDate: '',
+          location: '',
+          productionType: '',
+          packageSelection: '',
+          estimatedHours: '',
+          additionalNotes: '',
+          uploadCallSheet: null,
+          addOns: []
+        });
+        setFormSubmitted(false);
+      }, 3000);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('There was an error submitting your request. Please try again or contact us directly.');
+    }
   };
 
   if (currentPage === 'bundle') {
@@ -692,7 +717,18 @@ const App = () => {
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleFormSubmit} className="bg-gradient-to-br from-neutral-900 to-neutral-950 border border-neutral-800 rounded-2xl p-5 sm:p-8 md:p-12 space-y-6 sm:space-y-8">
+                <form 
+                  name="contact-quote"
+                  method="POST"
+                  data-netlify="true"
+                  data-netlify-honeypot="bot-field"
+                  onSubmit={handleFormSubmit} 
+                  className="bg-gradient-to-br from-neutral-900 to-neutral-950 border border-neutral-800 rounded-2xl p-5 sm:p-8 md:p-12 space-y-6 sm:space-y-8"
+                >
+              {/* Hidden fields for Netlify */}
+              <input type="hidden" name="form-name" value="contact-quote" />
+              <input type="hidden" name="bot-field" />
+              
               <div className="space-y-5 sm:space-y-6">
                 <h3 className="text-lg sm:text-xl font-bold uppercase tracking-widest text-cyan-400">Required Information</h3>
                 
