@@ -53,7 +53,17 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
       ],
       highlighted: false
     }
-  ];
+];
+
+// Define addons outside component to avoid recreation on each render
+const addons = [
+  { item: "Additional Wireless Lav", rate: "$100", price: 100 },
+  { item: "Wireless Boom Mic", rate: "$100", price: 100 },
+  { item: "IFB Headset", rate: "$50", price: 50 },
+  { item: "Wireless Camera Audio Link", rate: "$75", price: 75 },
+  { item: "Timecode Sync Box", rate: "$50", price: 50 },
+  { item: "Timecode Smart Slate", rate: "$75", price: 75 },  
+];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
