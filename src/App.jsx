@@ -164,29 +164,25 @@ const App = () => {
       title: 'Production Sound',
       subtitle: 'On-Set Sound Recording',
       description: 'Clean dialogue capture with professional mixers, wireless systems, and timecode sync — designed for fast-moving sets and demanding productions.',
-      icon: <Mic2 className="w-8 h-8 text-cyan-400" />,
-      highlighted: true
+      icon: <Mic2 className="w-8 h-8 text-cyan-400" />
     },
     {
       title: 'Wireless & RF Management',
       subtitle: 'Reliable Wireless Audio',
       description: 'Multi-talent lav setups, boom integration, and RF coordination to ensure clean, uninterrupted audio on set.',
-      icon: <Radio className="w-8 h-8 text-cyan-400" />,
-      highlighted: false
+      icon: <Radio className="w-8 h-8 text-cyan-400" />
     },
     {
       title: 'Timecode & Camera Sync',
       subtitle: 'Production-Ready Sync',
       description: 'Accurate timecode for multi-camera shoots to streamline post-production and avoid costly sync issues.',
-      icon: <Clock className="w-8 h-8 text-cyan-400" />,
-      highlighted: false
+      icon: <Clock className="w-8 h-8 text-cyan-400" />
     },
     {
       title: 'Director / Client Monitoring',
       subtitle: 'IFB & Playback Monitoring',
       description: 'Real-time monitoring for directors, script supervisors, and clients — hear what the audience will hear.',
-      icon: <Volume2 className="w-8 h-8 text-cyan-400" />,
-      highlighted: false
+      icon: <Volume2 className="w-8 h-8 text-cyan-400" />
     }
   ];
 
