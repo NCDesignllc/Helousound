@@ -4,6 +4,7 @@
   uses: zwping/fork-sync@v1.6.5
   with:
     # Owner of the forked repository
+    rhelou
     owner: # optional
     # Token for the github API
     token: # optional, default is ${{ github.token }}
