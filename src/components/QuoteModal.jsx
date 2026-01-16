@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, AlertCircle, CheckCircle, Loader } from 'lucide-react';
+import { encodeFormData } from '../utils/formUtils';
 
 const QuoteModal = ({ isOpen, onClose, bundle }) => {
   const [formData, setFormData] = useState({
@@ -97,85 +98,53 @@ const QuoteModal = ({ isOpen, onClose, bundle }) => {
     setSubmitError('');
 
     try {
-      // Build the quote payload
-      const addonsList = bundle.addons.map(addon => ({
-        item: addon.item,
-        pricePerDay: addon.price,
-        quantity: addon.quantity,
-        lineTotalPerDay: addon.price * addon.quantity
-      }));
+      // Build the addons summary for Netlify Forms
+      const addonsListSummary = bundle.addons.map(addon => 
+        `${addon.item} x${addon.quantity} ($${addon.price * addon.quantity}/day)`
+      ).join(', ') || 'None';
 
-      const payload = {
-        selectedPackage: {
-          name: bundle.selectedPackage.name,
-          pricePerDay: bundle.selectedPackage.price,
-          displayPrice: bundle.selectedPackage.displayPrice
-        },
-        addons: addonsList,
-        totals: {
-          totalPerDay: bundle.totalPerDay
-        },
-        client: {
-          fullName: formData.fullName.trim(),
-          email: formData.email.trim(),
-          phone: formData.phone.trim() || null,
-          productionName: formData.productionName.trim() || null,
-          address: formData.address.trim() || null,
-          shootDate: formData.shootDate,
-          productionDurationDays: parseInt(formData.productionDurationDays, 10),
-          notes: formData.notes.trim() || null
-        }
+      // Calculate estimated total
+      const estimatedTotal = bundle.totalPerDay * parseInt(formData.productionDurationDays, 10);
+
+      // Prepare form data for Netlify Forms
+      const netlifyFormData = {
+        'form-name': 'quote-request',
+        'fullName': formData.fullName.trim(),
+        'email': formData.email.trim(),
+        'phone': formData.phone.trim() || '',
+        'productionName': formData.productionName.trim() || '',
+        'address': formData.address.trim() || '',
+        'shootDate': formData.shootDate,
+        'productionDurationDays': formData.productionDurationDays.toString(),
+        'notes': formData.notes.trim() || '',
+        'packageName': bundle.selectedPackage?.name || '',
+        'packagePrice': bundle.selectedPackage?.displayPrice || '',
+        'addons': addonsListSummary,
+        'totalPerDay': `$${bundle.totalPerDay}`,
+        'estimatedTotal': `$${estimatedTotal}`
       };
 
-      // Send to backend
-      const response = await fetch('http://localhost:5000/api/request-quote', {
+      // Send to Netlify Forms
+      const response = await fetch('/', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify(payload)
+        body: encodeFormData(netlifyFormData)
       });
 
-      // Read response body as text first
-      const text = await response.text();
-      let message = text;
-      
-      // Try to parse as JSON to extract error message
-      try {
-        const jsonData = JSON.parse(text);
-        message = jsonData?.error || jsonData?.message || text;
-      } catch (e) {
-        // If not JSON, use raw text
-      }
-
-      // Check if response is OK
       if (!response.ok) {
-        const error = new Error(message || `HTTP ${response.status}`);
-        console.error('Quote submission HTTP error:', {
-          status: response.status,
-          message: error.message,
-          payload: payload,
-          responseText: text
-        });
-        setSubmitError(error.message);
-        setSubmitStatus('error');
-      } else {
-        setSubmitStatus('success');
-        // Close modal after success
-        setTimeout(() => {
-          onClose();
-        }, 2000);
+        throw new Error(`Form submission failed: ${response.status}`);
       }
+
+      setSubmitStatus('success');
+      // Close modal after success
+      setTimeout(() => {
+        onClose();
+      }, 2000);
     } catch (error) {
-      // Network or parsing error
-      const errorMessage = error.message || 'Network error. Please try again.';
-      const networkError = error instanceof TypeError ? 'Network error. Please try again.' : errorMessage;
-      console.error('Error submitting quote:', {
-        message: error.message,
-        stack: error.stack,
-        payload: formData
-      });
-      setSubmitError(networkError);
+      console.error('Error submitting quote:', error);
+      setSubmitError('Submission failed. Please try again.');
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -266,7 +235,22 @@ const QuoteModal = ({ isOpen, onClose, bundle }) => {
 
           {/* Form */}
           {submitStatus !== 'success' && (
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form 
+              name="quote-request"
+              method="POST"
+              data-netlify="true"
+              data-netlify-honeypot="bot-field"
+              onSubmit={handleSubmit} 
+              className="space-y-5"
+            >
+              {/* Hidden fields for Netlify Forms */}
+              <input type="hidden" name="form-name" value="quote-request" />
+              <p className="hidden">
+                <label>
+                  Don&apos;t fill this out if you&apos;re human: <input name="bot-field" />
+                </label>
+              </p>
+              
               {/* Full Name */}
               <div>
                 <label className="block text-sm font-bold uppercase text-neutral-300 mb-2 tracking-widest">
