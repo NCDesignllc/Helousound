@@ -109,6 +109,7 @@ const App = () => {
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [heroVideoFailed, setHeroVideoFailed] = useState(false);
+  const [heroVideoReady, setHeroVideoReady] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -466,10 +467,11 @@ const App = () => {
               muted
               loop
               playsInline
-              preload="metadata"
-              poster="/audio-mixing-gear-setup.jpg"
+              preload="auto"
               onError={() => setHeroVideoFailed(true)}
-              className="w-full h-full object-cover opacity-40 filter grayscale"
+              onCanPlay={() => setHeroVideoReady(true)}
+              onPlaying={() => setHeroVideoReady(true)}
+              className={`w-full h-full object-cover filter grayscale transition-opacity duration-700 ${heroVideoReady ? 'opacity-40' : 'opacity-0'}`}
             >
               <source src="/Abstract_Audio_Wave_Video_Generation.mp4" type="video/mp4" />
             </video>
