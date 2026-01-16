@@ -318,16 +318,15 @@ const App = () => {
     setIsModalOpen(true);
   };
 
-  const handleBundleModalConfirm = () => {
-    setIsModalOpen(false);
-    // Pass the selected package to BundleBuilder via context
+  const navigateToBundle = () => {
     setCurrentPage('bundle');
     window.scrollTo(0, 0);
   };
 
-  const navigateToBundle = () => {
-    setCurrentPage('bundle');
-    window.scrollTo(0, 0);
+  const handleBundleModalConfirm = () => {
+    setIsModalOpen(false);
+    // Pass the selected package to BundleBuilder via context
+    navigateToBundle();
   };
 
   const handleBundleModalClose = () => {
@@ -491,6 +490,7 @@ const App = () => {
           <button 
             onClick={navigateToBundle}
             className="bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-300 text-black px-8 sm:px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105 active:scale-95 min-h-[48px]"
+            aria-label="Get a quote - navigate to custom sound package builder"
           >
             Get a Quote
           </button>
@@ -669,6 +669,7 @@ const App = () => {
               <button
                 onClick={navigateToBundle}
                 className="bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-300 text-black px-8 sm:px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105 active:scale-95 min-h-[48px]"
+                aria-label="Get a quote - navigate to custom sound package builder"
               >
                 Get a Quote
               </button>
