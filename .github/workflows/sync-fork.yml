@@ -33,7 +33,7 @@
 on:
   push:
     branches:
-      - "sync-fork"
+      - "main"
   schedule:
     - cron: '0 * * * *' #every 24h
   workflow_dispatch:
