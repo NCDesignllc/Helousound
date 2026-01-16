@@ -570,16 +570,12 @@ const App = () => {
             {services.map((service, i) => (
               <div 
                 key={i} 
-                className={`group p-6 sm:p-8 rounded-2xl transition-all duration-300 cursor-pointer ${
-                  service.highlighted
-                    ? 'bg-gradient-to-br from-cyan-500/20 to-neutral-900 border-2 border-cyan-400 shadow-lg shadow-cyan-500/20 lg:col-span-1 lg:row-span-2 flex flex-col justify-start hover:from-cyan-500/30 hover:border-cyan-300 hover:shadow-xl hover:shadow-cyan-500/30 hover:scale-105'
-                    : 'bg-gradient-to-br from-neutral-800/50 to-neutral-900 border border-neutral-700 hover:from-cyan-500/10 hover:to-neutral-800 hover:border-cyan-400 hover:shadow-xl hover:shadow-cyan-500/20 hover:scale-105'
-                }`}
+                className="group p-6 sm:p-8 rounded-2xl transition-all duration-300 cursor-pointer bg-gradient-to-br from-neutral-800/50 to-neutral-900 border border-neutral-700 hover:from-cyan-500/10 hover:to-neutral-800 hover:border-cyan-400 hover:shadow-xl hover:shadow-cyan-500/20 hover:scale-105"
               >
-                <div className={`mb-4 sm:mb-6 group-hover:scale-110 ${service.highlighted ? 'text-4xl' : ''}`}>{service.icon}</div>
-                <h3 className={`font-black uppercase mb-2 group-hover:text-cyan-400 transition-colors ${service.highlighted ? 'text-lg sm:text-xl text-cyan-400' : 'text-xl sm:text-2xl'}`}>{service.title}</h3>
-                <h4 className={`font-bold uppercase mb-3 sm:mb-4 text-cyan-400/70 group-hover:text-cyan-400 transition-colors text-xs sm:text-sm`}>{service.subtitle}</h4>
-                <p className={`text-sm sm:text-base transition-colors ${service.highlighted ? 'text-neutral-200 group-hover:text-neutral-100' : 'text-neutral-400 group-hover:text-neutral-200'}`}>{service.description}</p>
+                <div className="mb-4 sm:mb-6 group-hover:scale-110">{service.icon}</div>
+                <h3 className="font-black uppercase mb-2 text-xl sm:text-2xl group-hover:text-cyan-400 transition-colors">{service.title}</h3>
+                <h4 className="font-bold uppercase mb-3 sm:mb-4 text-cyan-400/70 group-hover:text-cyan-400 transition-colors text-xs sm:text-sm">{service.subtitle}</h4>
+                <p className="text-sm sm:text-base text-neutral-400 group-hover:text-neutral-200 transition-colors">{service.description}</p>
               </div>
             ))}
           </div>
