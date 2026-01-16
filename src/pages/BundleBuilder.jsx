@@ -3,25 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Volume2, Plus, Minus, ShoppingCart, ArrowLeft } from 'lucide-react';
 import { useSelectedPackage } from '../context/SelectedPackageContext.jsx';
 import QuoteModal from '../components/QuoteModal.jsx';
-const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
-  const { selectedPackage, setSelectedPackage, cart, setCart } = useSelectedPackage();
-  const [scrolled, setScrolled] = useState(false);
 
-  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Initialize from props if context is empty (e.g., direct navigation)
-  useEffect(() => {
-    if (!selectedPackage && initialPackage) {
-      setSelectedPackage(initialPackage);
-    }
-  }, [initialPackage, selectedPackage, setSelectedPackage]);
-
-  const packages = [
+// Define packages outside component to avoid recreation on each render
+const packages = [
     {
       name: "Interview Quick Kit",
       price: 500,
@@ -65,16 +49,45 @@ const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
       ],
       highlighted: false
     }
-  ];
+];
 
-  const addons = [
-    { item: "Additional Wireless Lav", rate: "$100", price: 100 },
-    { item: "Wireless Boom Mic", rate: "$100", price: 100 },
-    { item: "IFB Headset", rate: "$50", price: 50 },
-    { item: "Wireless Camera Audio Link", rate: "$75", price: 75 },
-    { item: "Timecode Sync Box", rate: "$50", price: 50 },
-    { item: "Timecode Smart Slate", rate: "$75", price: 75 },  
-  ];
+// Define addons outside component to avoid recreation on each render
+const addons = [
+  { item: "Additional Wireless Lav", rate: "$100", price: 100 },
+  { item: "Wireless Boom Mic", rate: "$100", price: 100 },
+  { item: "IFB Headset", rate: "$50", price: 50 },
+  { item: "Wireless Camera Audio Link", rate: "$75", price: 75 },
+  { item: "Timecode Sync Box", rate: "$50", price: 50 },
+  { item: "Timecode Smart Slate", rate: "$75", price: 75 },  
+];
+
+const BundleBuilder = ({ onBack, selectedPackage: initialPackage }) => {
+  const { selectedPackage, setSelectedPackage, cart, setCart } = useSelectedPackage();
+  const [scrolled, setScrolled] = useState(false);
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Initialize from props if context is empty (e.g., direct navigation)
+  useEffect(() => {
+    if (!selectedPackage && initialPackage) {
+      setSelectedPackage(initialPackage);
+    }
+  }, [initialPackage, selectedPackage, setSelectedPackage]);
+
+  // Auto-select "Narrative Film" on initial page load if no package is selected
+  useEffect(() => {
+    if (!selectedPackage && !initialPackage) {
+      const narrativeFilmPackage = packages.find(pkg => pkg.name === "Narrative Film");
+      if (narrativeFilmPackage) {
+        setSelectedPackage(narrativeFilmPackage);
+      }
+    }
+  }, [selectedPackage, initialPackage, setSelectedPackage]);
 
   const handleUpdateQuantity = (addonName, newQuantity) => {
     const qty = Math.max(0, newQuantity);
