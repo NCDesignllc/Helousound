@@ -24,6 +24,7 @@ import BundleBuilder from './pages/BundleBuilder.jsx';
 import WhySoundMatters from './pages/WhySoundMatters.jsx';
 import BundleModal from './components/BundleModal.jsx';
 import { useSelectedPackage } from './context/SelectedPackageContext.jsx';
+import { encodeFormData } from './utils/formUtils';
 
 // Utility to animate headings letter-by-letter when they enter view
 // When keepWordsTogether is true, each word stays intact so lines wrap at word boundaries.
@@ -334,7 +335,7 @@ const App = () => {
     // Keep the card selected
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
     const requiredFields = [
@@ -360,32 +361,59 @@ const App = () => {
     const estimate = calculateEstimate();
     const totalEstimate = estimate ? estimate.grandTotal : 0;
     
-    const formDataWithEstimate = {
-      ...formData,
-      estimatedCost: totalEstimate,
-      numberOfDays: estimate ? estimate.days : 1
-    };
-    
-    console.log('Form submitted:', formDataWithEstimate);
-    console.log('Sending confirmation email to:', formData.email);
-    setFormSubmitted(true);
-    
-    setTimeout(() => {
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        shootDate: '',
-        location: '',
-        productionType: '',
-        packageSelection: '',
-        estimatedHours: '',
-        additionalNotes: '',
-        uploadCallSheet: null,
-        addOns: []
+    try {
+      // Prepare form data for Netlify Forms
+      const netlifyFormData = {
+        'form-name': 'contact-form',
+        'name': formData.name,
+        'email': formData.email,
+        'phone': formData.phone,
+        'shootDate': formData.shootDate,
+        'location': formData.location,
+        'productionType': formData.productionType,
+        'packageSelection': formData.packageSelection || '',
+        'estimatedHours': formData.estimatedHours || '',
+        'additionalNotes': formData.additionalNotes || '',
+        'addOns': formData.addOns.join(', ') || 'None',
+        'estimatedCost': `$${totalEstimate}`,
+        'numberOfDays': estimate ? estimate.days.toString() : '1'
+      };
+
+      // Send to Netlify Forms
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: encodeFormData(netlifyFormData)
       });
-      setFormSubmitted(false);
-    }, 3000);
+
+      if (!response.ok) {
+        throw new Error(`Form submission failed: ${response.status}`);
+      }
+
+      setFormSubmitted(true);
+      
+      setTimeout(() => {
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          shootDate: '',
+          location: '',
+          productionType: '',
+          packageSelection: '',
+          estimatedHours: '',
+          additionalNotes: '',
+          uploadCallSheet: null,
+          addOns: []
+        });
+        setFormSubmitted(false);
+      }, 3000);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Form submission failed. Please try again.');
+    }
   };
 
   if (currentPage === 'bundle') {
@@ -692,7 +720,22 @@ const App = () => {
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleFormSubmit} className="bg-gradient-to-br from-neutral-900 to-neutral-950 border border-neutral-800 rounded-2xl p-5 sm:p-8 md:p-12 space-y-6 sm:space-y-8">
+                <form 
+                  name="contact-form"
+                  method="POST"
+                  data-netlify="true"
+                  data-netlify-honeypot="bot-field"
+                  onSubmit={handleFormSubmit} 
+                  className="bg-gradient-to-br from-neutral-900 to-neutral-950 border border-neutral-800 rounded-2xl p-5 sm:p-8 md:p-12 space-y-6 sm:space-y-8"
+                >
+              {/* Hidden fields for Netlify Forms */}
+              <input type="hidden" name="form-name" value="contact-form" />
+              <p className="hidden">
+                <label>
+                  Don&apos;t fill this out if you&apos;re human: <input name="bot-field" />
+                </label>
+              </p>
+              
               <div className="space-y-5 sm:space-y-6">
                 <h3 className="text-lg sm:text-xl font-bold uppercase tracking-widest text-cyan-400">Required Information</h3>
                 

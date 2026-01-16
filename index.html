@@ -11,5 +11,41 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Static HTML forms for Netlify Forms detection (required for SPAs) -->
+    <!-- These hidden forms allow Netlify to detect form fields at build time -->
+    
+    <!-- Quote Request Form (Bundle Builder) -->
+    <form name="quote-request" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="fullName" />
+      <input type="email" name="email" />
+      <input type="tel" name="phone" />
+      <input type="text" name="productionName" />
+      <input type="text" name="address" />
+      <input type="date" name="shootDate" />
+      <input type="number" name="productionDurationDays" />
+      <textarea name="notes"></textarea>
+      <input type="text" name="packageName" />
+      <input type="text" name="packagePrice" />
+      <input type="text" name="addons" />
+      <input type="text" name="totalPerDay" />
+      <input type="text" name="estimatedTotal" />
+    </form>
+
+    <!-- Contact Form (Homepage) -->
+    <form name="contact-form" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="tel" name="phone" />
+      <input type="date" name="shootDate" />
+      <input type="text" name="location" />
+      <input type="text" name="productionType" />
+      <input type="text" name="packageSelection" />
+      <input type="number" name="estimatedHours" />
+      <textarea name="additionalNotes"></textarea>
+      <input type="text" name="addOns" />
+      <input type="text" name="estimatedCost" />
+      <input type="text" name="numberOfDays" />
+    </form>
   </body>
 </html>
