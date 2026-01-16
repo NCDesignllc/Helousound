@@ -322,6 +322,12 @@ const App = () => {
     setIsModalOpen(false);
     // Pass the selected package to BundleBuilder via context
     setCurrentPage('bundle');
+    window.scrollTo(0, 0);
+  };
+
+  const navigateToBundle = () => {
+    setCurrentPage('bundle');
+    window.scrollTo(0, 0);
   };
 
   const handleBundleModalClose = () => {
@@ -483,8 +489,8 @@ const App = () => {
           </h1>
           {/* CTA button with minimum touch target size */}
           <button 
-            onClick={() => { setCurrentPage('bundle'); window.scrollTo(0, 0); }}
-            className="inline-block bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-300 text-black px-8 sm:px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105 active:scale-95 min-h-[48px]"
+            onClick={navigateToBundle}
+            className="bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-300 text-black px-8 sm:px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105 active:scale-95 min-h-[48px]"
           >
             Get a Quote
           </button>
@@ -661,7 +667,7 @@ const App = () => {
                 Ready for <span className="text-cyan-400">Professional Audio?</span>
               </h2>
               <button
-                onClick={() => { setCurrentPage('bundle'); window.scrollTo(0, 0); }}
+                onClick={navigateToBundle}
                 className="bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-300 text-black px-8 sm:px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all transform hover:scale-105 active:scale-95 min-h-[48px]"
               >
                 Get a Quote
